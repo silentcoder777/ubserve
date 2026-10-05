@@ -25,4 +25,4 @@ Real Stripe integration/webhook verification, refund policy, tax treatment, prov
 
 ## Documentation contract
 
-README and this roadmap must reflect actual capabilities. Each meaningful commit must also have an entry in the owner's private technical interview guide. Do not commit that guide to this public repository. Do not claim deployment or real authentication before verification.
+README and this roadmap must reflect actual capabilities. Keep the owner's private technical interview guide current with architecture, implementation rationale, tradeoffs and interview explanations. Do not include a commit log or commit-by-commit history in that guide. Do not commit that guide to this public repository. Do not claim deployment or real authentication before verification.
