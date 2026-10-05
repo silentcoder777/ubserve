@@ -114,6 +114,36 @@ export function assertSlot(
   )
     throw new Error("This time is already reserved. Choose another time.");
 }
+export function availableStartTimes(
+  provider: Provider,
+  date: string,
+  hours: number,
+  bookings: Booking[],
+  now = new Date(),
+) {
+  const day = new Date(`${date}T00:00:00`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(day.getTime()))
+    return [];
+
+  const times: string[] = [];
+  for (
+    let minutes = provider.startHour * 60;
+    minutes + hours * 60 <= provider.endHour * 60;
+    minutes += 30
+  ) {
+    const start = new Date(day);
+    start.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+    try {
+      assertSlot(provider, start.toISOString(), hours, bookings, now);
+      times.push(
+        `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`,
+      );
+    } catch {
+      // Invalid or reserved times are omitted from customer choices.
+    }
+  }
+  return times;
+}
 export function ranked(providers: Provider[], sort: string) {
   return [...providers].sort((a, b) =>
     sort === "price"

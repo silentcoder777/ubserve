@@ -23,6 +23,7 @@ import {
   categories,
   money,
   quote,
+  availableStartTimes,
   ranked,
   type Provider,
   type Booking,
@@ -72,6 +73,8 @@ export default function Marketplace() {
     [busy, setBusy] = useState(false),
     [mobileMenu, setMobileMenu] = useState(false);
   const [hours, setHours] = useState(2);
+  const [bookingDate, setBookingDate] = useState(tomorrow());
+  const [bookingTime, setBookingTime] = useState("10:00");
   function attempt(action: () => void) {
     setError("");
     try {
@@ -92,6 +95,9 @@ export default function Marketplace() {
     sort,
   );
   const profile = state.providers.find((p) => p.accountId === account?.id);
+  const availableTimes = selected
+    ? availableStartTimes(selected, bookingDate, hours, state.bookings)
+    : [];
   const bookings = state.bookings.filter((b) =>
     account?.role === "provider"
       ? b.providerId === profile?.id
@@ -121,7 +127,7 @@ export default function Marketplace() {
     attempt(() => {
       const b = requestBooking(
         selected.id,
-        `${f.get("date")}T${f.get("time")}`,
+        `${bookingDate}T${bookingTime}`,
         hours,
         String(f.get("address")),
         String(f.get("notes")),
@@ -455,8 +461,18 @@ export default function Marketplace() {
                           <button
                             className="profile-link"
                             onClick={() => {
+                              const duration = p.pricing === "fixed" ? 1 : 2;
+                              const date = tomorrow();
+                              const times = availableStartTimes(
+                                p,
+                                date,
+                                duration,
+                                state.bookings,
+                              );
                               setSelected(p);
-                              setHours(p.pricing === "fixed" ? 1 : 2);
+                              setHours(duration);
+                              setBookingDate(date);
+                              setBookingTime(times[0] ?? "");
                               setError("");
                             }}
                           >
@@ -963,17 +979,40 @@ export default function Marketplace() {
                   required
                   type="date"
                   min={tomorrow()}
-                  defaultValue={tomorrow()}
+                  value={bookingDate}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    const times = availableStartTimes(
+                      selected,
+                      date,
+                      hours,
+                      state.bookings,
+                    );
+                    setBookingDate(date);
+                    setBookingTime(times[0] ?? "");
+                  }}
                 />
               </Field>
               <Field label="Start time">
-                <input
+                <select
                   name="time"
                   required
-                  type="time"
-                  step="1800"
-                  defaultValue="10:00"
-                />
+                  value={bookingTime}
+                  disabled={!availableTimes.length}
+                  onChange={(e) => setBookingTime(e.target.value)}
+                >
+                  {!availableTimes.length && (
+                    <option value="">No times available</option>
+                  )}
+                  {availableTimes.map((time) => (
+                    <option key={time} value={time}>
+                      {new Date(`${bookingDate}T${time}`).toLocaleTimeString(
+                        undefined,
+                        { hour: "numeric", minute: "2-digit" },
+                      )}
+                    </option>
+                  ))}
+                </select>
               </Field>
             </div>
             <Field
@@ -985,7 +1024,21 @@ export default function Marketplace() {
             >
               <select
                 value={hours}
-                onChange={(e) => setHours(Number(e.target.value))}
+                onChange={(e) => {
+                  const duration = Number(e.target.value);
+                  const times = availableStartTimes(
+                    selected,
+                    bookingDate,
+                    duration,
+                    state.bookings,
+                  );
+                  setHours(duration);
+                  setBookingTime(
+                    times.includes(bookingTime)
+                      ? bookingTime
+                      : (times[0] ?? ""),
+                  );
+                }}
               >
                 {[1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8].map((h) => (
                   <option key={h} value={h}>
@@ -994,6 +1047,12 @@ export default function Marketplace() {
                 ))}
               </select>
             </Field>
+            {!availableTimes.length && (
+              <p className="error" role="alert">
+                No available times for this date and duration. Try another date
+                or a shorter visit.
+              </p>
+            )}
             <Field label="Service address">
               <input
                 name="address"
@@ -1028,7 +1087,11 @@ export default function Marketplace() {
               </p>
             )}
             {account?.role === "customer" ? (
-              <button className="primary full" type="submit">
+              <button
+                className="primary full"
+                type="submit"
+                disabled={!availableTimes.length}
+              >
                 Request booking <CalendarDays size={18} />
               </button>
             ) : (

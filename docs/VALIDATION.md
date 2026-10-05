@@ -29,3 +29,10 @@ These checks validate the current mock behavior. They do not establish productio
 - Browser checks now start the compiled production app on dedicated port 3001. They require a successful build and do not reuse a development server.
 
 The native dialog implementation applies to signup, booking, checkout and review forms. Native modal focus can move to browser controls at a Tab boundary; background page controls remain inert. This is not a full accessibility audit or actual-device Safari testing.
+
+## Guided appointment selection — October 5, 2026
+
+- Start-time choices are derived in 30-minute increments from the provider's working hours.
+- Choices that extend past closing, fall on an unavailable day, are in the past, or overlap a non-cancelled booking are omitted.
+- Changing the date or duration recalculates the choices and disables booking when none remain.
+- Domain tests cover duration boundaries, overlaps, adjacent appointments, unavailable days, and malformed dates; browser tests cover date/duration-driven option updates.

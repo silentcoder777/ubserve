@@ -7,7 +7,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Customer/provider demo identity creation and reopening by email (not secure authentication).
 - Provider profile publishing/editing, hourly/fixed pricing, weekly availability.
 - Search by name/service, category and city filters, confidence-weighted rating sorting.
-- Customer booking, estimates, local overlap checks, customer/provider dashboards.
+- Customer booking with date/duration-aware available start times, estimates, local overlap checks, and customer/provider dashboards.
 - Provider acceptance/completion, cancellation, one review per completed booking.
 - Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.
 - Domain and browser tests, GitHub Actions validation workflow.

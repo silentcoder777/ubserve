@@ -162,3 +162,23 @@ test("dialog backdrop dismissal preserves inside clicks", async ({ page }) => {
   await expect(dialog).toHaveCount(0);
   await expect(opener).toBeFocused();
 });
+
+test("booking form offers only start times that fit the selected duration", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "View & book" })
+    .click();
+  const dialog = page.getByRole("dialog", { name: "Maya Thompson" });
+  await expect(dialog.getByLabel("Start time").locator("option")).toHaveCount(
+    17,
+  );
+  await dialog.getByLabel("Duration").selectOption("8");
+  await expect(dialog.getByLabel("Start time").locator("option")).toHaveCount(
+    5,
+  );
+  await expect(dialog.getByLabel("Start time")).toHaveValue("08:00");
+});
