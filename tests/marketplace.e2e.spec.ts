@@ -90,7 +90,7 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
     page.getByRole("heading", { name: "Taylor Demo" }),
   ).toBeVisible();
 });
-test("search empty state and responsive page fit", async ({ page }) => {
+test("search empty state and responsive page fit", async ({ page }, testInfo) => {
   await page.goto("/");
   await page
     .getByLabel("Search services or providers")
@@ -99,6 +99,7 @@ test("search empty state and responsive page fit", async ({ page }) => {
     page.getByRole("heading", { name: "No providers found" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
+  if (process.env.UBSERVE_SCREENSHOT_DIR) await page.screenshot({path: `${process.env.UBSERVE_SCREENSHOT_DIR}/ubserve-${testInfo.project.name}.png`,fullPage:true});
   await expect(page.getByRole("article")).toHaveCount(6);
   expect(
     await page.evaluate(

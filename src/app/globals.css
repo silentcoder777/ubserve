@@ -207,7 +207,7 @@ nav > button.active:after {
   width: 100%;
   margin-top: 12px;
 }
-.mobile-toggle {
+.mobile-toggle.icon-button {
   display: none;
 }
 .icon-button {
@@ -1022,7 +1022,7 @@ blockquote p {
   .nav-actions > .primary {
     display: none;
   }
-  .mobile-toggle {
+  .mobile-toggle.icon-button {
     display: flex;
   }
   nav {

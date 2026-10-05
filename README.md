@@ -87,4 +87,6 @@ Demo identities have no passwords or email verification and are **not authentica
 
 Do not use real personal information in the mock demo. Production readiness requires the backend work listed in [the roadmap](docs/ROADMAP.md).
 
+See [validation evidence](docs/VALIDATION.md) for the initial checks and their limits.
+
 The owner's private technical interview guide is maintained separately because this repository is public.
