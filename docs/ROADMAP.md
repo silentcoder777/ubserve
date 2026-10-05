@@ -13,6 +13,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Domain and browser tests, GitHub Actions validation workflow.
 - Native modal dialogs with keyboard focus containment, Escape/backdrop dismissal, and opener focus restoration.
 - Explicit investor-preview account switching across existing browser-local customer/provider workspaces.
+- Live marketplace-data synchronization with tab-specific demo identities for two-perspective walkthroughs.
 
 ## Before the investor presentation
 

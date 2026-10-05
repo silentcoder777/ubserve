@@ -10,24 +10,42 @@ import {
   type State,
 } from "./model";
 const KEY = "ubserve-demo-v1";
+const ACCOUNT_KEY = "ubserve-demo-account-v1";
 let snapshot: State = seed;
 let initialized = false;
 const listeners = new Set<() => void>();
+function parseStoredState(raw: string | null) {
+  if (!raw) return null;
+  try {
+    const candidate = JSON.parse(raw) as Partial<State>;
+    if (
+      Array.isArray(candidate.accounts) &&
+      Array.isArray(candidate.providers) &&
+      Array.isArray(candidate.bookings) &&
+      Array.isArray(candidate.reviews)
+    )
+      return candidate as State;
+  } catch {
+    /* Invalid or outdated browser data should not break the demo. */
+  }
+  return null;
+}
 function hydrate() {
   if (initialized || typeof window === "undefined") return;
   initialized = true;
   try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const candidate = JSON.parse(raw);
-      if (
-        Array.isArray(candidate.accounts) &&
-        Array.isArray(candidate.providers) &&
-        Array.isArray(candidate.bookings) &&
-        Array.isArray(candidate.reviews)
-      )
-        snapshot = candidate;
-    }
+    const stored = parseStoredState(localStorage.getItem(KEY)) ?? seed;
+    // Fall back to the old shared field once when migrating existing demo data.
+    const accountId =
+      sessionStorage.getItem(ACCOUNT_KEY) ?? stored.currentAccountId;
+    const validAccountId = stored.accounts.some(
+      (account) => account.id === accountId,
+    )
+      ? accountId
+      : null;
+    snapshot = { ...stored, currentAccountId: validAccountId };
+    if (validAccountId) sessionStorage.setItem(ACCOUNT_KEY, validAccountId);
+    else sessionStorage.removeItem(ACCOUNT_KEY);
   } catch {
     /* Keep demo usable when browser storage is unavailable. */
   }
@@ -38,7 +56,14 @@ function getSnapshot() {
 }
 function publish(next: State) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(next));
+    // Marketplace data is shared by same-profile tabs; active identity is not.
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({ ...next, currentAccountId: null }),
+    );
+    if (next.currentAccountId)
+      sessionStorage.setItem(ACCOUNT_KEY, next.currentAccountId);
+    else sessionStorage.removeItem(ACCOUNT_KEY);
   } catch {
     throw new Error(
       "Your browser cannot save demo data. Enable local storage and try again.",
@@ -51,8 +76,24 @@ export function useDemo() {
   return useSyncExternalStore(
     (cb) => {
       listeners.add(cb);
+      const syncTab = (event: StorageEvent) => {
+        if (event.key !== KEY) return;
+        const next = parseStoredState(event.newValue);
+        if (!next) return;
+        const currentAccountId = next.accounts.some(
+          (account) => account.id === snapshot.currentAccountId,
+        )
+          ? snapshot.currentAccountId
+          : null;
+        snapshot = { ...next, currentAccountId };
+        if (!currentAccountId) sessionStorage.removeItem(ACCOUNT_KEY);
+        initialized = true;
+        cb();
+      };
+      window.addEventListener("storage", syncTab);
       return () => {
         listeners.delete(cb);
+        window.removeEventListener("storage", syncTab);
       };
     },
     getSnapshot,

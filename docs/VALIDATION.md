@@ -43,3 +43,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Selecting a role opens its booking workspace so one request can be presented from customer and provider perspectives.
 - Browser coverage follows a newly requested appointment into Maya Thompson’s provider workspace, accepts it, and returns to the customer workspace.
 - This shortcut is not an authentication or authorization design. Production accounts must use Supabase Auth and server-enforced role checks.
+
+## Same-browser tab synchronization — October 5, 2026
+
+- Marketplace data uses localStorage and listens for valid Ubserve updates from other tabs in the same browser profile; active demo identity uses tab-specific sessionStorage.
+- Browser coverage opens Maya Thompson’s provider workspace in a second tab, creates a customer booking in the first tab, verifies that the provider sees and accepts it without reloading, then verifies that the customer receives the accepted state.
+- Switching identity in one tab does not switch the other tab, so customer and provider workspaces can remain open together.
+- Invalid storage payloads are ignored so stale or malformed browser data does not replace a working in-memory snapshot.
+- This does not synchronize separate browser profiles, browsers, devices, or users; shared production state still requires Supabase.

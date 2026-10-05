@@ -16,6 +16,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.
 - Switch between existing customer and provider workspaces with an explicitly labeled browser-only investor preview control.
+- Keep marketplace data synchronized across same-profile browser tabs while each tab retains its own customer or provider workspace.
 
 ## Technology
 
@@ -55,7 +56,7 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 6. Switch back to the customer workspace, view bookings, and leave a review.
 7. To show onboarding, create another provider account and publish a new profile.
 
-**Reset demo data** clears all locally saved accounts, profiles, bookings, and reviews. Each browser has its own data; use the same browser for the current end-to-end demo.
+**Reset demo data** clears all locally saved accounts, profiles, bookings, and reviews. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
 
 ## Structure
 
@@ -85,7 +86,7 @@ This endpoint accepts client-provided amounts because it is a simulation. Produc
 
 ## Important demo boundaries
 
-Demo identities have no passwords or email verification and are **not authentication**. The investor role switcher is intentionally presentation-only and must not exist as an authorization path in production. Data lives in localStorage and is neither shared between devices nor secure. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
+Demo identities have no passwords or email verification and are **not authentication**. The investor role switcher is intentionally presentation-only and must not exist as an authorization path in production. Data lives in localStorage; same-browser tab synchronization is neither cross-device sharing nor secure persistence. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
 
 Do not use real personal information in the mock demo. Production readiness requires the backend work listed in [the roadmap](docs/ROADMAP.md).
 

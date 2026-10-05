@@ -218,3 +218,42 @@ test("investor preview follows a booking across customer and provider views", as
     page.getByRole("status").filter({ hasText: "Previewing Alex Demo" }),
   ).toBeVisible();
 });
+
+test("a provider tab receives new customer bookings without a reload", async ({
+  page,
+  context,
+}) => {
+  const providerPage = await context.newPage();
+  await providerPage.goto("/");
+  await providerPage.getByRole("button", { name: "Switch demo view" }).click();
+  await providerPage
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  await expect(
+    providerPage.getByRole("heading", { name: "No bookings yet" }),
+  ).toBeVisible();
+
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "View & book" })
+    .click();
+  await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+  await page.getByRole("button", { name: "Request booking" }).click();
+
+  await expect(
+    providerPage.getByRole("heading", { name: "Alex Demo" }),
+  ).toBeVisible();
+  await expect(
+    providerPage.getByText("requested", { exact: true }),
+  ).toBeVisible();
+  await providerPage.getByRole("button", { name: "Accept request" }).click();
+  await page
+    .getByRole("dialog", { name: "Test checkout" })
+    .getByRole("button", { name: "Close dialog" })
+    .click();
+  await expect(page.getByText("accepted", { exact: true })).toBeVisible();
+});
