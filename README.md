@@ -14,6 +14,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
 - Submit one review after a completed service; update provider ratings.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.
+- Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.
 
 ## Technology
 
@@ -41,7 +42,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Browser tests cover desktop and mobile Chromium. GitHub Actions runs validation on pushes to `main` and pull requests. Vercel deployment is not configured yet.
+Browser tests cover desktop and mobile Chromium using the production build on port 3001. Run `npm run build` before `npm run test:e2e`; tests start their own server rather than reusing a development server. GitHub Actions runs validation on pushes to `main` and pull requests. Vercel deployment is not configured yet.
 
 ## Demo walkthrough
 

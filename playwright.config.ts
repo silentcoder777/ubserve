@@ -4,7 +4,7 @@ export default defineConfig({
   testMatch: "**/*.e2e.spec.ts",
   fullyParallel: true,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://127.0.0.1:3001",
     trace: "retain-on-failure",
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
       ? {
@@ -27,9 +27,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
+    command: "npm run start -- --port 3001",
+    url: "http://127.0.0.1:3001",
+    reuseExistingServer: false,
   },
   reporter: process.env.CI ? "github" : "list",
 });

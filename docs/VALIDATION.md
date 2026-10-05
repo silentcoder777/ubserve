@@ -19,3 +19,13 @@ GitHub Actions run 37248247193 completed successfully for commit 730af68. Subseq
 ## Boundaries
 
 These checks validate the current mock behavior. They do not establish production authentication, multi-device shared data, secure role enforcement, database booking concurrency, payment processing, actual iPhone Safari support or load capacity.
+
+## Dialog usability and production browser checks — October 5, 2026
+
+- Lint, TypeScript, and production build passed.
+- 23 domain/API tests passed.
+- 10 browser checks passed across desktop and mobile Chromium emulation.
+- Added checks for blocked background focus, keyboard movement inside forms, Escape dismissal, backdrop clicks, scroll locking, and opener focus restoration.
+- Browser checks now start the compiled production app on dedicated port 3001. They require a successful build and do not reuse a development server.
+
+The native dialog implementation applies to signup, booking, checkout and review forms. Native modal focus can move to browser controls at a Tab boundary; background page controls remain inert. This is not a full accessibility audit or actual-device Safari testing.

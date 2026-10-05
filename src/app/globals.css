@@ -589,21 +589,17 @@ footer button {
   color: var(--muted);
   font-size: 11px;
 }
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
+.modal::backdrop {
   background: #10293b77;
   backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
 }
 .modal {
   background: white;
+  border: 0;
+  margin: auto;
+  color: var(--ink);
   max-width: 570px;
-  width: 100%;
+  width: calc(100% - 48px);
   max-height: 90dvh;
   overflow-y: auto;
   border-radius: 18px;
@@ -1151,10 +1147,8 @@ blockquote p {
     margin-left: 0;
     font-size: 12px;
   }
-  .overlay {
-    padding: 12px;
-  }
   .modal {
+    width: calc(100% - 24px);
     padding: 21px;
     max-height: 94dvh;
   }

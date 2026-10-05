@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent, type ReactNode } from "react";
+import Modal from "./modal";
 import {
   Search,
   MapPin,
@@ -40,39 +41,6 @@ import {
 } from "@/lib/store";
 const icons = { Cleaning: Sparkles, Cooking: ChefHat, "Auto repair": Wrench };
 type View = "discover" | "bookings" | "profile";
-function Modal({
-  title,
-  onClose,
-  children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <div className="overlay" onClick={onClose}>
-      <section
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        className="modal"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-head">
-          <h2>{title}</h2>
-          <button
-            className="icon-button"
-            aria-label="Close dialog"
-            onClick={onClose}
-          >
-            <X size={22} />
-          </button>
-        </div>
-        {children}
-      </section>
-    </div>
-  );
-}
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="field">

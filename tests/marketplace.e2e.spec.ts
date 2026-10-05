@@ -41,7 +41,9 @@ test("customer books, tests decline/success, provider completes, customer review
     page.getByRole("dialog", { name: "Test checkout" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Test declined payment" }).click();
-  await expect(page.getByRole("dialog").getByRole("alert")).toContainText("declined");
+  await expect(page.getByRole("dialog").getByRole("alert")).toContainText(
+    "declined",
+  );
   await page.getByRole("button", { name: /Simulate payment/ }).click();
   await expect(
     page.getByText("Test payment complete", { exact: true }),
@@ -59,7 +61,9 @@ test("customer books, tests decline/success, provider completes, customer review
     .getByLabel("Your review")
     .fill("Great service and excellent attention to detail.");
   await page.getByRole("button", { name: "Publish review" }).click();
-  await expect(page.getByRole("status").filter({hasText:"Review published"})).toContainText("Review published");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Review published" }),
+  ).toContainText("Review published");
   await page.reload();
   await bookings(page);
   await expect(page.getByText("completed", { exact: true })).toBeVisible();
@@ -90,7 +94,9 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
     page.getByRole("heading", { name: "Taylor Demo" }),
   ).toBeVisible();
 });
-test("search empty state and responsive page fit", async ({ page }, testInfo) => {
+test("search empty state and responsive page fit", async ({
+  page,
+}, testInfo) => {
   await page.goto("/");
   await page
     .getByLabel("Search services or providers")
@@ -99,11 +105,60 @@ test("search empty state and responsive page fit", async ({ page }, testInfo) =>
     page.getByRole("heading", { name: "No providers found" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  if (process.env.UBSERVE_SCREENSHOT_DIR) await page.screenshot({path: `${process.env.UBSERVE_SCREENSHOT_DIR}/ubserve-${testInfo.project.name}.png`,fullPage:true});
+  if (process.env.UBSERVE_SCREENSHOT_DIR)
+    await page.screenshot({
+      path: `${process.env.UBSERVE_SCREENSHOT_DIR}/ubserve-${testInfo.project.name}.png`,
+      fullPage: true,
+    });
   await expect(page.getByRole("article")).toHaveCount(6);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
+});
+
+test("dialogs contain keyboard focus, close with Escape, and restore the opener", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const opener = page
+    .getByRole("button", { name: "Join / sign in", exact: true })
+    .first();
+  await opener.click();
+  const dialog = page.getByRole("dialog", { name: "Make yourself at home" });
+  await expect(dialog).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  const close = dialog.getByRole("button", { name: "Close dialog" });
+  await close.focus();
+  // Native dialog focus may reach browser chrome at a Tab boundary; it must
+  // never reach inert page controls. Test that boundary without requiring
+  // a custom wrapping implementation.
+  await opener.evaluate((element) => (element as HTMLElement).focus());
+  await expect(close).toBeFocused();
+  await dialog.getByLabel("Your name").focus();
+  await page.keyboard.press("Shift+Tab");
+  await expect(
+    dialog.getByRole("button", { name: "I offer a service" }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(dialog.getByLabel("Your name")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+});
+
+test("dialog backdrop dismissal preserves inside clicks", async ({ page }) => {
+  await page.goto("/");
+  const opener = page
+    .getByRole("button", { name: "Join / sign in", exact: true })
+    .first();
+  await opener.click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Your name").click();
+  await expect(dialog).toBeVisible();
+  await page.mouse.click(2, 2);
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
 });

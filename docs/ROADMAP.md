@@ -11,6 +11,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Provider acceptance/completion, cancellation, one review per completed booking.
 - Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.
 - Domain and browser tests, GitHub Actions validation workflow.
+- Native modal dialogs with keyboard focus containment, Escape/backdrop dismissal, and opener focus restoration.
 
 ## Before the investor presentation
 
