@@ -18,6 +18,7 @@ import {
   Menu,
   CreditCard,
   CircleUserRound,
+  UsersRound,
 } from "lucide-react";
 import {
   categories,
@@ -39,6 +40,7 @@ import {
   addReview,
   markPaid,
   resetDemo,
+  switchDemoAccount,
 } from "@/lib/store";
 const icons = { Cleaning: Sparkles, Cooking: ChefHat, "Auto repair": Wrench };
 type View = "discover" | "bookings" | "profile";
@@ -71,7 +73,8 @@ export default function Marketplace() {
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [mobileMenu, setMobileMenu] = useState(false);
+    [mobileMenu, setMobileMenu] = useState(false),
+    [demoSwitcher, setDemoSwitcher] = useState(false);
   const [hours, setHours] = useState(2);
   const [bookingDate, setBookingDate] = useState(tomorrow());
   const [bookingTime, setBookingTime] = useState("10:00");
@@ -191,9 +194,18 @@ export default function Marketplace() {
         <span>
           <span className="live-dot" /> Investor preview
         </span>
-        <span>
+        <span className="demo-note">
           Sample providers · Browser-local demo accounts · No real charges
         </span>
+        <button
+          className="demo-switch-button"
+          onClick={() => {
+            setDemoSwitcher(true);
+            setError("");
+          }}
+        >
+          <UsersRound size={14} /> Switch demo view
+        </button>
       </div>
       <header>
         <div className="nav-shell">
@@ -923,6 +935,54 @@ export default function Marketplace() {
             To manage Maya’s sample profile, use <b>Maya Thompson</b>,{" "}
             <b>p1@example.test</b>, and the provider role.
           </div>
+        </Modal>
+      )}
+      {demoSwitcher && (
+        <Modal
+          title="Switch demo view"
+          onClose={() => {
+            setDemoSwitcher(false);
+            setError("");
+          }}
+        >
+          <p className="muted">
+            Follow the same booking as each participant without signing in
+            again. This presentation shortcut changes only browser-local demo
+            state and is not production authentication.
+          </p>
+          <div className="demo-account-list">
+            {state.accounts.map((candidate) => (
+              <button
+                className={
+                  candidate.id === account?.id
+                    ? "demo-account active"
+                    : "demo-account"
+                }
+                key={candidate.id}
+                aria-label={`${candidate.name} ${candidate.role}`}
+                onClick={() =>
+                  attempt(() => {
+                    const next = switchDemoAccount(candidate.id);
+                    setDemoSwitcher(false);
+                    setView("bookings");
+                    setNotice(
+                      `Previewing ${next.name}’s ${next.role} workspace.`,
+                    );
+                  })
+                }
+              >
+                <span>
+                  <b>{candidate.name}</b>
+                  <small>{candidate.role}</small>
+                </span>
+                {candidate.id === account?.id && <Check size={17} />}
+              </button>
+            ))}
+          </div>
+          <p className="fine-print">
+            Customer accounts appear here after you create them through the
+            regular Join / sign in flow.
+          </p>
         </Modal>
       )}
       {selected && (

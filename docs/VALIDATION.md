@@ -36,3 +36,10 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Choices that extend past closing, fall on an unavailable day, are in the past, or overlap a non-cancelled booking are omitted.
 - Changing the date or duration recalculates the choices and disables booking when none remain.
 - Domain tests cover duration boundaries, overlaps, adjacent appointments, unavailable days, and malformed dates; browser tests cover date/duration-driven option updates.
+
+## Cross-role investor walkthrough — October 5, 2026
+
+- The preview bar opens an explicitly labeled account switcher containing only existing browser-local demo accounts.
+- Selecting a role opens its booking workspace so one request can be presented from customer and provider perspectives.
+- Browser coverage follows a newly requested appointment into Maya Thompson’s provider workspace, accepts it, and returns to the customer workspace.
+- This shortcut is not an authentication or authorization design. Production accounts must use Supabase Auth and server-enforced role checks.

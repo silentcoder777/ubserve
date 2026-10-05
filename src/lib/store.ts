@@ -83,6 +83,13 @@ export function enterDemo(name: string, email: string, role: Account["role"]) {
 export function signOut() {
   publish({ ...getSnapshot(), currentAccountId: null });
 }
+export function switchDemoAccount(accountId: string) {
+  const s = getSnapshot();
+  const account = s.accounts.find((candidate) => candidate.id === accountId);
+  if (!account) throw new Error("Demo account not found.");
+  publish({ ...s, currentAccountId: account.id });
+  return account;
+}
 export function saveProvider(
   input: Omit<
     Provider,

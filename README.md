@@ -15,6 +15,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Submit one review after a completed service; update provider ratings.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.
+- Switch between existing customer and provider workspaces with an explicitly labeled browser-only investor preview control.
 
 ## Technology
 
@@ -49,9 +50,9 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 1. Choose **Join / sign in**, enter a fictional customer name/email, and continue.
 2. Open Maya Thompson's profile and request a future appointment during 08:00–18:00 local time.
 3. Try a declined test payment, then a successful test payment.
-4. Sign out and reopen the provider account using name `Maya Thompson`, email `p1@example.test`, provider role.
+4. Choose **Switch demo view** in the preview bar and select Maya Thompson. This is a presentation shortcut; the normal sign-out/reopen flow remains available.
 5. Open **My bookings**, accept the request, and mark it complete.
-6. Reopen the customer account, view bookings, and leave a review.
+6. Switch back to the customer workspace, view bookings, and leave a review.
 7. To show onboarding, create another provider account and publish a new profile.
 
 **Reset demo data** clears all locally saved accounts, profiles, bookings, and reviews. Each browser has its own data; use the same browser for the current end-to-end demo.
@@ -84,7 +85,7 @@ This endpoint accepts client-provided amounts because it is a simulation. Produc
 
 ## Important demo boundaries
 
-Demo identities have no passwords or email verification and are **not authentication**. Data lives in localStorage and is neither shared between devices nor secure. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
+Demo identities have no passwords or email verification and are **not authentication**. The investor role switcher is intentionally presentation-only and must not exist as an authorization path in production. Data lives in localStorage and is neither shared between devices nor secure. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
 
 Do not use real personal information in the mock demo. Production readiness requires the backend work listed in [the roadmap](docs/ROADMAP.md).
 

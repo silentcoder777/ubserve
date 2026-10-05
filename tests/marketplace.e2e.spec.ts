@@ -182,3 +182,39 @@ test("booking form offers only start times that fit the selected duration", asyn
   );
   await expect(dialog.getByLabel("Start time")).toHaveValue("08:00");
 });
+
+test("investor preview follows a booking across customer and provider views", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "View & book" })
+    .click();
+  await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+  await page.getByRole("button", { name: "Request booking" }).click();
+  await page
+    .getByRole("dialog", { name: "Test checkout" })
+    .getByRole("button", { name: "Close dialog" })
+    .click();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  await expect(page.getByRole("heading", { name: "Alex Demo" })).toBeVisible();
+  await page.getByRole("button", { name: "Accept request" }).click();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Alex Demo customer" })
+    .click();
+  await expect(page.getByText("accepted", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Previewing Alex Demo" }),
+  ).toBeVisible();
+});

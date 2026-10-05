@@ -12,6 +12,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.
 - Domain and browser tests, GitHub Actions validation workflow.
 - Native modal dialogs with keyboard focus containment, Escape/backdrop dismissal, and opener focus restoration.
+- Explicit investor-preview account switching across existing browser-local customer/provider workspaces.
 
 ## Before the investor presentation
 

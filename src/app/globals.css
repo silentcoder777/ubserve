@@ -71,11 +71,26 @@ span svg {
   font-size: 12px;
   letter-spacing: 0.03em;
 }
-.demo-bar > span:first-child {
+.demo-bar > span:first-child,
+.demo-switch-button {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 700;
+}
+.demo-note {
+  margin-left: auto;
+}
+.demo-switch-button {
+  background: transparent;
+  border-left: 1px solid #ffffff44;
+  color: white;
+  padding-left: 16px;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+.demo-switch-button:hover {
+  color: #ffd8bd;
 }
 .live-dot {
   width: 6px;
@@ -680,6 +695,36 @@ legend {
   margin-top: 20px;
   line-height: 1.7;
 }
+.demo-account-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+.demo-account {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  padding: 11px 13px;
+  color: var(--ink);
+}
+.demo-account:hover,
+.demo-account.active {
+  border-color: #8aa9bb;
+  background: var(--paper);
+}
+.demo-account span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.demo-account small {
+  color: var(--muted);
+  text-transform: capitalize;
+}
 .notice {
   display: flex;
   gap: 9px;
@@ -999,9 +1044,13 @@ blockquote p {
     padding: 8px 18px;
     font-size: 10px;
   }
-  .demo-bar > span:last-child {
-    max-width: 200px;
-    text-align: right;
+  .demo-note {
+    display: none;
+  }
+  .demo-switch-button {
+    margin-left: auto;
+    padding-left: 12px;
+    font-size: 10px;
   }
   .nav-shell {
     min-height: 76px;
