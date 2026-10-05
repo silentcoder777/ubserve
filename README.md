@@ -17,6 +17,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.
 - Switch between existing customer and provider workspaces with an explicitly labeled browser-only investor preview control.
 - Keep marketplace data synchronized across same-profile browser tabs while each tab retains its own customer or provider workspace.
+- Validate saved browser data at runtime and recover to the fictional seed when a snapshot is malformed.
 
 ## Technology
 
@@ -65,6 +66,7 @@ src/app/                     App Router layout, page, and styles
 src/app/api/mock-checkout/    Mock payment HTTP endpoint
 src/components/              Marketplace screens and forms
 src/lib/model.ts             Types, pricing, availability, ranking
+src/lib/persistence.ts       Runtime schema and relationship validation
 src/lib/seed.ts               Clearly labeled fictional providers
 src/lib/store.ts              Browser-local state and demo commands
  tests/                      Domain and browser tests
@@ -86,7 +88,7 @@ This endpoint accepts client-provided amounts because it is a simulation. Produc
 
 ## Important demo boundaries
 
-Demo identities have no passwords or email verification and are **not authentication**. The investor role switcher is intentionally presentation-only and must not exist as an authorization path in production. Data lives in localStorage; same-browser tab synchronization is neither cross-device sharing nor secure persistence. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
+Demo identities have no passwords or email verification and are **not authentication**. The investor role switcher is intentionally presentation-only and must not exist as an authorization path in production. Data lives in localStorage; same-browser tab synchronization is neither cross-device sharing nor secure persistence. Runtime validation prevents malformed saved data from crashing the demo, but it does not make browser storage trusted. Role checks and booking overlap checks are local demonstrations, not production security or concurrency guarantees. Appointments use the browser's local timezone. Initial provider ratings/counts are sample data. No payment is charged, and there is no provider payout.
 
 Do not use real personal information in the mock demo. Production readiness requires the backend work listed in [the roadmap](docs/ROADMAP.md).
 

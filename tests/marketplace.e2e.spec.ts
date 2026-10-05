@@ -257,3 +257,25 @@ test("a provider tab receives new customer bookings without a reload", async ({
     .click();
   await expect(page.getByText("accepted", { exact: true })).toBeVisible();
 });
+
+test("malformed saved data recovers to the safe demo seed", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "ubserve-demo-v1",
+      JSON.stringify({
+        accounts: [],
+        providers: [{ name: 42 }],
+        bookings: [],
+        reviews: [],
+        currentAccountId: null,
+      }),
+    ),
+  );
+  await page.reload();
+
+  await expect(page.getByRole("article")).toHaveCount(6);
+  await expect(
+    page.getByRole("heading", { name: "Maya Thompson" }),
+  ).toBeVisible();
+});

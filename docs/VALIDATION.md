@@ -51,3 +51,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Switching identity in one tab does not switch the other tab, so customer and provider workspaces can remain open together.
 - Invalid storage payloads are ignored so stale or malformed browser data does not replace a working in-memory snapshot.
 - This does not synchronize separate browser profiles, browsers, devices, or users; shared production state still requires Supabase.
+
+## Browser-state recovery — October 5, 2026
+
+- A Zod schema validates every persisted account, provider, booking and review before hydration or cross-tab adoption.
+- Relationship checks reject providers without provider owners, bookings without valid customer/provider records, and reviews whose parties do not match their booking.
+- Unit coverage checks current-state acceptance, invalid JSON, incomplete snapshots, invalid nested values and broken references.
+- Browser coverage injects a malformed provider snapshot, reloads, and verifies recovery to all six fictional providers instead of a render crash.
+- Validation is a demo reliability boundary, not an authorization or secure-storage boundary.

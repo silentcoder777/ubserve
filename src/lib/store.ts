@@ -1,6 +1,7 @@
 "use client";
 import { useSyncExternalStore } from "react";
 import { seed } from "./seed";
+import { parseStoredState } from "./persistence";
 import {
   assertSlot,
   quote,
@@ -14,22 +15,6 @@ const ACCOUNT_KEY = "ubserve-demo-account-v1";
 let snapshot: State = seed;
 let initialized = false;
 const listeners = new Set<() => void>();
-function parseStoredState(raw: string | null) {
-  if (!raw) return null;
-  try {
-    const candidate = JSON.parse(raw) as Partial<State>;
-    if (
-      Array.isArray(candidate.accounts) &&
-      Array.isArray(candidate.providers) &&
-      Array.isArray(candidate.bookings) &&
-      Array.isArray(candidate.reviews)
-    )
-      return candidate as State;
-  } catch {
-    /* Invalid or outdated browser data should not break the demo. */
-  }
-  return null;
-}
 function hydrate() {
   if (initialized || typeof window === "undefined") return;
   initialized = true;
