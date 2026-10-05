@@ -881,6 +881,49 @@ fieldset {
   display: grid;
   gap: 18px;
 }
+.booking-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--paper);
+}
+.booking-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.booking-filters button:hover,
+.booking-filters button.active {
+  border-color: #b5c6d0;
+  background: white;
+  color: var(--ink);
+}
+.booking-filters button.active {
+  box-shadow: 0 2px 8px #10293b10;
+}
+.booking-filters span {
+  min-width: 21px;
+  border-radius: 12px;
+  background: #e7edf0;
+  padding: 2px 6px;
+  text-align: center;
+  font-size: 10px;
+}
+.booking-filter-empty {
+  padding: 38px 20px;
+}
 .booking-card {
   padding: 24px;
   border: 1px solid var(--line);

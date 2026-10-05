@@ -279,3 +279,54 @@ test("malformed saved data recovers to the safe demo seed", async ({ page }) => 
     page.getByRole("heading", { name: "Maya Thompson" }),
   ).toBeVisible();
 });
+
+test("booking dashboard filters appointments by lifecycle status", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+
+  for (const provider of ["Maya Thompson", "Arjun Patel"]) {
+    await page
+      .getByRole("article")
+      .filter({ has: page.getByRole("heading", { name: provider }) })
+      .getByRole("button", { name: "View & book" })
+      .click();
+    await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+    await page.getByRole("button", { name: "Request booking" }).click();
+    await page
+      .getByRole("dialog", { name: "Test checkout" })
+      .getByRole("button", { name: "Close dialog" })
+      .click();
+    if (provider === "Maya Thompson")
+      await page.getByRole("button", { name: "Ubserve home" }).click();
+  }
+
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "Cancel" })
+    .click();
+  await expect(page.getByRole("button", { name: "All 2" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Requested 1" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Cancelled 1" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Requested 1" }).click();
+  await expect(page.getByRole("heading", { name: "Arjun Patel" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Maya Thompson" }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Cancelled 1" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Maya Thompson" }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+});

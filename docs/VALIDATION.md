@@ -59,3 +59,10 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Unit coverage checks current-state acceptance, invalid JSON, incomplete snapshots, invalid nested values and broken references.
 - Browser coverage injects a malformed provider snapshot, reloads, and verifies recovery to all six fictional providers instead of a render crash.
 - Validation is a demo reliability boundary, not an authorization or secure-storage boundary.
+
+## Booking dashboard status filters — October 5, 2026
+
+- Customer and provider dashboards derive live counts for all, requested, accepted, completed and cancelled bookings.
+- Selecting a status filters the existing role-scoped booking collection without changing persisted data.
+- An empty filtered result offers a direct return to all bookings instead of resembling an account with no history.
+- Browser coverage creates appointments with two providers, cancels one, verifies counts, and checks requested/cancelled filtering on desktop and mobile.

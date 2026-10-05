@@ -12,6 +12,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Request an appointment with a duration, service address, cost estimate, and only currently available start times.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
+- Filter customer and provider dashboards by booking lifecycle status with live counts.
 - Submit one review after a completed service; update provider ratings.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.

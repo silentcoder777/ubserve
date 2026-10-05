@@ -44,6 +44,13 @@ import {
 } from "@/lib/store";
 const icons = { Cleaning: Sparkles, Cooking: ChefHat, "Auto repair": Wrench };
 type View = "discover" | "bookings" | "profile";
+const bookingStatuses: Booking["status"][] = [
+  "requested",
+  "accepted",
+  "completed",
+  "cancelled",
+];
+type BookingFilter = "all" | Booking["status"];
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="field">
@@ -74,7 +81,8 @@ export default function Marketplace() {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [mobileMenu, setMobileMenu] = useState(false),
-    [demoSwitcher, setDemoSwitcher] = useState(false);
+    [demoSwitcher, setDemoSwitcher] = useState(false),
+    [bookingFilter, setBookingFilter] = useState<BookingFilter>("all");
   const [hours, setHours] = useState(2);
   const [bookingDate, setBookingDate] = useState(tomorrow());
   const [bookingTime, setBookingTime] = useState("10:00");
@@ -107,6 +115,10 @@ export default function Marketplace() {
       : b.customerId === account?.id,
   );
   const pending = bookings.filter((b) => b.status === "requested").length;
+  const visibleBookings =
+    bookingFilter === "all"
+      ? bookings
+      : bookings.filter((booking) => booking.status === bookingFilter);
   function navigate(next: View) {
     setView(next);
     setMobileMenu(false);
@@ -118,6 +130,7 @@ export default function Marketplace() {
     const f = new FormData(e.currentTarget);
     attempt(() => {
       enterDemo(String(f.get("name")), String(f.get("email")), authRole);
+      setBookingFilter("all");
       setAuth(false);
       setNotice("Your demo account is ready.");
       if (authRole === "provider") setView("profile");
@@ -746,8 +759,50 @@ export default function Marketplace() {
                 </button>
               </div>
             ) : (
-              <div className="booking-list">
-                {bookings.map((b) => (
+              <>
+                <div
+                  className="booking-filters"
+                  role="group"
+                  aria-label="Filter bookings"
+                >
+                  <button
+                    className={bookingFilter === "all" ? "active" : ""}
+                    aria-pressed={bookingFilter === "all"}
+                    onClick={() => setBookingFilter("all")}
+                  >
+                    All <span>{bookings.length}</span>
+                  </button>
+                  {bookingStatuses.map((status) => {
+                    const count = bookings.filter(
+                      (booking) => booking.status === status,
+                    ).length;
+                    return (
+                      <button
+                        className={bookingFilter === status ? "active" : ""}
+                        aria-pressed={bookingFilter === status}
+                        key={status}
+                        onClick={() => setBookingFilter(status)}
+                      >
+                        {status} <span>{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {visibleBookings.length === 0 ? (
+                  <div className="empty booking-filter-empty">
+                    <CalendarDays size={28} />
+                    <h3>No {bookingFilter} bookings</h3>
+                    <p>Choose another status to see your appointments.</p>
+                    <button
+                      className="secondary"
+                      onClick={() => setBookingFilter("all")}
+                    >
+                      Show all bookings
+                    </button>
+                  </div>
+                ) : (
+                  <div className="booking-list">
+                    {visibleBookings.map((b) => (
                   <article className="booking-card" key={b.id}>
                     <div className="booking-top">
                       <div>
@@ -853,8 +908,10 @@ export default function Marketplace() {
                       </div>
                     </div>
                   </article>
-                ))}
-              </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </section>
         )}
@@ -963,6 +1020,7 @@ export default function Marketplace() {
                 onClick={() =>
                   attempt(() => {
                     const next = switchDemoAccount(candidate.id);
+                    setBookingFilter("all");
                     setDemoSwitcher(false);
                     setView("bookings");
                     setNotice(
