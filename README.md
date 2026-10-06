@@ -16,7 +16,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Recalculate the booking price and reset simulated payment state when a customer reschedules a pending request.
 - Filter customer and provider dashboards by booking lifecycle status with live counts.
 - Review role-scoped booking summaries for active work, completion, simulated payments, and non-cancelled demo value.
-- Submit one review after a completed service; update provider ratings.
+- Submit one review after a completed service, update provider ratings, and reopen saved feedback from customer or provider dashboards.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges; reopen a persisted test receipt for successful simulations.
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.
 - Switch between existing customer and provider workspaces with an explicitly labeled browser-only investor preview control.

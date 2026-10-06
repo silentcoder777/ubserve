@@ -9,7 +9,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Search by name/service description, category, city, pricing model and maximum listed price, with confidence-weighted rating sorting.
 - Customer booking with date/duration-aware available start times, estimates, local overlap checks, and customer/provider dashboards.
 - Customer rescheduling for requested bookings with availability revalidation, refreshed price snapshots, and explicit mock-payment reset.
-- Provider acceptance/completion, cancellation, one review per completed booking.
+- Provider acceptance/completion, cancellation, one review per completed booking, and role-aware saved-review detail.
 - Customer/provider booking dashboards with lifecycle counts and status filters.
 - Guarded cancellation/decline actions with appointment context and visible lifecycle feedback.
 - Role-scoped customer/provider summary metrics derived from current bookings and non-cancelled demo value.

@@ -1167,6 +1167,41 @@ fieldset {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
 }
+.saved-review-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 8px 0 16px;
+}
+.saved-review-stars {
+  display: flex;
+  gap: 3px;
+  color: #d98a20;
+}
+.saved-review-head strong {
+  font-size: 18px;
+}
+.saved-review-copy {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  padding: 18px;
+}
+.saved-review-copy p {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.saved-review-copy cite {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
 .test-card {
   display: flex;
   flex-direction: column;

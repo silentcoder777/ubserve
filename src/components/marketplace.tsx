@@ -31,6 +31,7 @@ import {
   type Provider,
   type Booking,
   type Category,
+  type Review,
 } from "@/lib/model";
 import {
   useDemo,
@@ -91,6 +92,7 @@ export default function Marketplace() {
     [review, setReview] = useState<Booking | null>(null),
     [checkout, setCheckout] = useState<Booking | null>(null),
     [receipt, setReceipt] = useState<Booking | null>(null),
+    [reviewDetails, setReviewDetails] = useState<Review | null>(null),
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
@@ -204,6 +206,9 @@ export default function Marketplace() {
     bookingFilter === "all"
       ? bookings
       : bookings.filter((booking) => booking.status === bookingFilter);
+  const reviewsByBooking = new Map(
+    state.reviews.map((savedReview) => [savedReview.bookingId, savedReview]),
+  );
   function navigate(next: View) {
     setView(next);
     setMobileMenu(false);
@@ -1125,6 +1130,19 @@ export default function Marketplace() {
                               Leave a review
                             </button>
                           )}
+                        {b.status === "completed" &&
+                          reviewsByBooking.has(b.id) && (
+                            <button
+                              className="secondary small"
+                              onClick={() =>
+                                setReviewDetails(reviewsByBooking.get(b.id)!)
+                              }
+                            >
+                              {account.role === "customer"
+                                ? "View your review"
+                                : "View customer review"}
+                            </button>
+                          )}
                         {["requested", "accepted"].includes(b.status) && (
                           <button
                             className="text-button"
@@ -1806,6 +1824,43 @@ export default function Marketplace() {
               Publish review
             </button>
           </form>
+        </Modal>
+      )}
+      {reviewDetails && (
+        <Modal
+          title="Completed service review"
+          onClose={() => setReviewDetails(null)}
+        >
+          <div className="saved-review-head">
+            <span
+              className="saved-review-stars"
+              aria-label={`${reviewDetails.stars} out of 5 stars`}
+            >
+              {Array.from({ length: 5 }, (_, index) => (
+                <Star
+                  aria-hidden="true"
+                  fill={index < reviewDetails.stars ? "currentColor" : "none"}
+                  key={index}
+                  size={19}
+                />
+              ))}
+            </span>
+            <strong>{reviewDetails.stars}/5</strong>
+          </div>
+          <blockquote className="saved-review-copy">
+            <p>{reviewDetails.text}</p>
+            <cite>— {reviewDetails.name}</cite>
+          </blockquote>
+          <p className="fine-print">
+            This review is attached to one completed browser-local booking.
+            Initial provider ratings remain fictional seed data in this demo.
+          </p>
+          <button
+            className="primary full"
+            onClick={() => setReviewDetails(null)}
+          >
+            Done
+          </button>
         </Modal>
       )}
     </>

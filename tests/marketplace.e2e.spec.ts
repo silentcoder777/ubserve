@@ -80,6 +80,27 @@ test("customer books, tests decline/success, provider completes, customer review
   await page.reload();
   await bookings(page);
   await expect(page.getByText("completed", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "View your review" }).click();
+  const savedReview = page.getByRole("dialog", {
+    name: "Completed service review",
+  });
+  await expect(
+    savedReview.getByLabel("5 out of 5 stars"),
+  ).toBeVisible();
+  await expect(savedReview).toContainText(
+    "Great service and excellent attention to detail.",
+  );
+  await savedReview.getByRole("button", { name: "Done" }).click();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  await page.getByRole("button", { name: "View customer review" }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Completed service review" }),
+  ).toContainText("Alex Demo");
 });
 test("provider publishes fixed-price profile and discovery survives reload", async ({
   page,

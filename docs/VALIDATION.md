@@ -103,3 +103,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - The receipt shows the linked service, provider, simulated amount, simulated status and full mock identifier while repeatedly stating that no real charge occurred.
 - Browser coverage completes checkout, validates the receipt, reloads the production build, and reopens the same browser-local receipt on desktop and mobile.
 - The receipt is presentation evidence for the simulation only. It is not a Stripe receipt, settlement record or proof of payment, and no card data is collected.
+
+## Role-aware saved reviews — October 6, 2026
+
+- After a customer submits the single allowed review for a completed booking, the dashboard replaces the submission action with a persistent review-detail action.
+- Customers see **View your review** while the related provider sees **View customer review** for the same browser-local record.
+- The detail dialog exposes an accessible star label, review text and reviewer name, while distinguishing newly submitted feedback from fictional seed ratings.
+- Browser coverage publishes feedback, reloads the production build, reopens it as the customer, then switches to the provider workspace and verifies the same review on desktop and mobile.
+- Production still requires server-authorized completed-booking checks, a database uniqueness constraint, moderation and an edit/removal policy.
