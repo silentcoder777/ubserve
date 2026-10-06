@@ -330,3 +330,45 @@ test("booking dashboard filters appointments by lifecycle status", async ({
     ),
   ).toBe(true);
 });
+
+test("customer reschedules a requested booking and refreshes its mock quote", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "View & book" })
+    .click();
+  await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+  await page.getByRole("button", { name: "Request booking" }).click();
+  await page.getByRole("button", { name: /Simulate payment/ }).click();
+  await expect(
+    page.getByText("Test payment complete", { exact: true }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Reschedule" }).click();
+  const dialog = page.getByRole("dialog", {
+    name: "Reschedule Maya Thompson",
+  });
+  await dialog.getByLabel("New duration").selectOption("1.5");
+  await dialog.getByLabel("New start time").selectOption("09:30");
+  await expect(dialog.getByText("$52.50", { exact: true })).toBeVisible();
+  await dialog.getByRole("button", { name: "Save new time" }).click();
+
+  await expect(
+    page.getByRole("status").filter({ hasText: "mock payment was reset" }),
+  ).toBeVisible();
+  await expect(page.getByText("Not paid", { exact: true })).toBeVisible();
+  await expect(page.getByText("1.5 hours", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  await expect(page.getByRole("heading", { name: "Alex Demo" })).toBeVisible();
+  await expect(page.getByText("1.5 hours", { exact: true })).toBeVisible();
+  await expect(page.getByText("$52.50", { exact: true })).toBeVisible();
+});

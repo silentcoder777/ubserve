@@ -206,6 +206,41 @@ export function updateBooking(id: string, status: Booking["status"]) {
     bookings: s.bookings.map((x) => (x.id === id ? { ...x, status } : x)),
   });
 }
+export function rescheduleBooking(
+  id: string,
+  startsAt: string,
+  hours: number,
+) {
+  const s = getSnapshot(),
+    a = currentAccount(),
+    booking = s.bookings.find((item) => item.id === id),
+    provider = s.providers.find((item) => item.id === booking?.providerId);
+  if (
+    !a ||
+    !booking ||
+    booking.customerId !== a.id ||
+    booking.status !== "requested" ||
+    !provider
+  )
+    throw new Error("Only your requested bookings can be rescheduled.");
+  const otherBookings = s.bookings.filter((item) => item.id !== booking.id);
+  assertSlot(provider, startsAt, hours, otherBookings);
+  const updated: Booking = {
+    ...booking,
+    startsAt: new Date(startsAt).toISOString(),
+    hours,
+    totalCents: quote(provider, hours),
+    payment: "unpaid",
+  };
+  delete updated.paymentReference;
+  publish({
+    ...s,
+    bookings: s.bookings.map((item) =>
+      item.id === booking.id ? updated : item,
+    ),
+  });
+  return updated;
+}
 export function markPaid(id: string, reference: string) {
   const s = getSnapshot(),
     a = currentAccount(),

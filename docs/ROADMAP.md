@@ -8,6 +8,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Provider profile publishing/editing, hourly/fixed pricing, weekly availability.
 - Search by name/service, category and city filters, confidence-weighted rating sorting.
 - Customer booking with date/duration-aware available start times, estimates, local overlap checks, and customer/provider dashboards.
+- Customer rescheduling for requested bookings with availability revalidation, refreshed price snapshots, and explicit mock-payment reset.
 - Provider acceptance/completion, cancellation, one review per completed booking.
 - Customer/provider booking dashboards with lifecycle counts and status filters.
 - Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.

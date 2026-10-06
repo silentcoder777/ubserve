@@ -9,9 +9,10 @@ A responsive US local-services marketplace where customers choose providers by s
 - Create or reopen customer/provider demo accounts with a name and fictional email.
 - Publish/edit a provider profile, category, price, and weekly availability.
 - Discover providers through search, category/city filters, and recommended or price ordering.
-- Request an appointment with a duration, service address, cost estimate, and only currently available start times.
+- Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
+- Recalculate the booking price and reset simulated payment state when a customer reschedules a pending request.
 - Filter customer and provider dashboards by booking lifecycle status with live counts.
 - Submit one review after a completed service; update provider ratings.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.

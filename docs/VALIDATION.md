@@ -66,3 +66,10 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Selecting a status filters the existing role-scoped booking collection without changing persisted data.
 - An empty filtered result offers a direct return to all bookings instead of resembling an account with no history.
 - Browser coverage creates appointments with two providers, cancels one, verifies counts, and checks requested/cancelled filtering on desktop and mobile.
+
+## Requested-booking rescheduling — October 5, 2026
+
+- A customer can reschedule only their own booking while its status is `requested`; accepted, completed and cancelled bookings remain immutable through this path.
+- Candidate times exclude the booking being edited but reuse the same working-hours, future-date and overlap checks used for initial booking.
+- Saving recalculates the price snapshot from the provider's current rate. Any previous simulated payment reference is cleared and the booking returns to unpaid so the demo never presents an old amount as paid.
+- Browser coverage pays in mock mode, changes the duration and time, verifies the refreshed total and unpaid state, and switches to the provider workspace to verify the updated request on desktop and mobile.

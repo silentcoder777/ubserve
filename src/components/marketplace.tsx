@@ -36,6 +36,7 @@ import {
   signOut,
   saveProvider,
   requestBooking,
+  rescheduleBooking,
   updateBooking,
   addReview,
   markPaid,
@@ -75,6 +76,7 @@ export default function Marketplace() {
   const [auth, setAuth] = useState(false),
     [authRole, setAuthRole] = useState<"customer" | "provider">("customer"),
     [selected, setSelected] = useState<Provider | null>(null),
+    [reschedule, setReschedule] = useState<Booking | null>(null),
     [review, setReview] = useState<Booking | null>(null),
     [checkout, setCheckout] = useState<Booking | null>(null),
     [notice, setNotice] = useState(""),
@@ -109,6 +111,18 @@ export default function Marketplace() {
   const availableTimes = selected
     ? availableStartTimes(selected, bookingDate, hours, state.bookings)
     : [];
+  const rescheduleProvider = state.providers.find(
+    (provider) => provider.id === reschedule?.providerId,
+  );
+  const rescheduleTimes =
+    reschedule && rescheduleProvider
+      ? availableStartTimes(
+          rescheduleProvider,
+          bookingDate,
+          hours,
+          state.bookings.filter((booking) => booking.id !== reschedule.id),
+        )
+      : [];
   const bookings = state.bookings.filter((b) =>
     account?.role === "provider"
       ? b.providerId === profile?.id
@@ -174,6 +188,24 @@ export default function Marketplace() {
         endHour: Number(f.get("endHour")),
       });
       setNotice("Profile published. Customers can now discover your service.");
+    });
+  }
+  function rescheduleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!reschedule) return;
+    const resetPayment = reschedule.payment === "mock-paid";
+    attempt(() => {
+      rescheduleBooking(
+        reschedule.id,
+        `${bookingDate}T${bookingTime}`,
+        hours,
+      );
+      setReschedule(null);
+      setNotice(
+        resetPayment
+          ? "Booking rescheduled. The prior mock payment was reset; no money was charged."
+          : "Booking rescheduled. The provider can see the new time.",
+      );
     });
   }
   async function pay(scenario: "success" | "decline") {
@@ -322,7 +354,12 @@ export default function Marketplace() {
             </button>
           </div>
         )}
-        {error && !auth && !selected && !review && !checkout && (
+        {error &&
+          !auth &&
+          !selected &&
+          !reschedule &&
+          !review &&
+          !checkout && (
           <div role="alert" className="error">
             {error}
           </div>
@@ -867,6 +904,47 @@ export default function Marketplace() {
                             </button>
                           )}
                         {account.role === "customer" &&
+                          b.status === "requested" && (
+                            <button
+                              className="secondary small"
+                              onClick={() => {
+                                const provider = state.providers.find(
+                                  (candidate) => candidate.id === b.providerId,
+                                );
+                                const start = new Date(b.startsAt);
+                                const date = `${start.getFullYear()}-${String(
+                                  start.getMonth() + 1,
+                                ).padStart(2, "0")}-${String(
+                                  start.getDate(),
+                                ).padStart(2, "0")}`;
+                                const time = `${String(
+                                  start.getHours(),
+                                ).padStart(2, "0")}:${String(
+                                  start.getMinutes(),
+                                ).padStart(2, "0")}`;
+                                const times = provider
+                                  ? availableStartTimes(
+                                      provider,
+                                      date,
+                                      b.hours,
+                                      state.bookings.filter(
+                                        (booking) => booking.id !== b.id,
+                                      ),
+                                    )
+                                  : [];
+                                setReschedule(b);
+                                setHours(b.hours);
+                                setBookingDate(date);
+                                setBookingTime(
+                                  times.includes(time) ? time : (times[0] ?? ""),
+                                );
+                                setError("");
+                              }}
+                            >
+                              Reschedule
+                            </button>
+                          )}
+                        {account.role === "customer" &&
                           b.payment === "unpaid" &&
                           b.status !== "cancelled" && (
                             <button
@@ -1226,6 +1304,129 @@ export default function Marketplace() {
                 Open a customer account to book
               </button>
             )}
+          </form>
+        </Modal>
+      )}
+      {reschedule && rescheduleProvider && (
+        <Modal
+          title={`Reschedule ${reschedule.providerName}`}
+          onClose={() => {
+            setReschedule(null);
+            setError("");
+          }}
+        >
+          <p className="muted">
+            Choose a new available time while this request is awaiting the
+            provider. The total is recalculated from the provider’s current
+            listed price.
+          </p>
+          <form onSubmit={rescheduleSubmit}>
+            <div className="form-grid">
+              <Field label="New date">
+                <input
+                  required
+                  type="date"
+                  min={tomorrow()}
+                  value={bookingDate}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    const times = availableStartTimes(
+                      rescheduleProvider,
+                      date,
+                      hours,
+                      state.bookings.filter(
+                        (booking) => booking.id !== reschedule.id,
+                      ),
+                    );
+                    setBookingDate(date);
+                    setBookingTime(times[0] ?? "");
+                  }}
+                />
+              </Field>
+              <Field label="New start time">
+                <select
+                  required
+                  value={bookingTime}
+                  disabled={!rescheduleTimes.length}
+                  onChange={(e) => setBookingTime(e.target.value)}
+                >
+                  {!rescheduleTimes.length && (
+                    <option value="">No times available</option>
+                  )}
+                  {rescheduleTimes.map((time) => (
+                    <option key={time} value={time}>
+                      {new Date(`${bookingDate}T${time}`).toLocaleTimeString(
+                        undefined,
+                        { hour: "numeric", minute: "2-digit" },
+                      )}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
+            <Field label="New duration">
+              <select
+                value={hours}
+                onChange={(e) => {
+                  const duration = Number(e.target.value);
+                  const times = availableStartTimes(
+                    rescheduleProvider,
+                    bookingDate,
+                    duration,
+                    state.bookings.filter(
+                      (booking) => booking.id !== reschedule.id,
+                    ),
+                  );
+                  setHours(duration);
+                  setBookingTime(
+                    times.includes(bookingTime)
+                      ? bookingTime
+                      : (times[0] ?? ""),
+                  );
+                }}
+              >
+                {[1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8].map((duration) => (
+                  <option key={duration} value={duration}>
+                    {duration} {duration === 1 ? "hour" : "hours"}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            {!rescheduleTimes.length && (
+              <p className="error" role="alert">
+                No available times for this date and duration. Try another date
+                or a shorter visit.
+              </p>
+            )}
+            {reschedule.payment === "mock-paid" && (
+              <p className="fine-print">
+                Saving a new quote resets the simulated payment to unpaid. No
+                real charge or refund occurs in this demo.
+              </p>
+            )}
+            <div className="estimate">
+              <span>
+                Updated demo total
+                <small>
+                  {rescheduleProvider.pricing === "hourly"
+                    ? `${money(rescheduleProvider.priceCents)} × ${hours} hours`
+                    : "Fixed visit price"}
+                </small>
+              </span>
+              <strong>{money(quote(rescheduleProvider, hours))}</strong>
+            </div>
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
+            <button
+              className="primary full"
+              type="submit"
+              disabled={!rescheduleTimes.length}
+            >
+              Save new time <CalendarDays size={18} />
+            </button>
           </form>
         </Modal>
       )}
