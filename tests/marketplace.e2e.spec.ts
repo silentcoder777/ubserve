@@ -48,6 +48,19 @@ test("customer books, tests decline/success, provider completes, customer review
   await expect(
     page.getByText("Test payment complete", { exact: true }),
   ).toBeVisible();
+  await page.getByRole("button", { name: "View test receipt" }).click();
+  const receipt = page.getByRole("dialog", { name: "Test payment receipt" });
+  await expect(receipt.getByText("$70", { exact: true })).toBeVisible();
+  await expect(receipt.getByText("Succeeded (simulated)")).toBeVisible();
+  await expect(receipt.getByText(/^mock_pi_/)).toBeVisible();
+  await receipt.getByRole("button", { name: "Done" }).click();
+  await page.reload();
+  await bookings(page);
+  await page.getByRole("button", { name: "View test receipt" }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Test payment receipt" }),
+  ).toContainText("No real charge was made");
+  await page.getByRole("button", { name: "Done" }).click();
   await page.getByRole("button", { name: "Sign out" }).click();
   await account(page, "Maya Thompson", "p1@example.test", true);
   await bookings(page);

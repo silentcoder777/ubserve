@@ -17,11 +17,15 @@ afterEach(() => {
 it("returns a clearly identified mock payment", async () => {
   const res = await POST(req(body));
   expect(res.status).toBe(200);
-  expect(await res.json()).toMatchObject({
+  const result = await res.json();
+  expect(result).toMatchObject({
+    bookingId: body.bookingId,
     status: "succeeded",
     mock: true,
     amount: 7000,
+    currency: "usd",
   });
+  expect(result.id).toMatch(/^mock_pi_[0-9a-f-]{36}$/);
 });
 it("returns a recoverable declined payment", async () =>
   expect((await POST(req({ ...body, scenario: "decline" }))).status).toBe(402));

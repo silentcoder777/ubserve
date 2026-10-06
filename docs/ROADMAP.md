@@ -13,7 +13,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Customer/provider booking dashboards with lifecycle counts and status filters.
 - Guarded cancellation/decline actions with appointment context and visible lifecycle feedback.
 - Role-scoped customer/provider summary metrics derived from current bookings and non-cancelled demo value.
-- Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.
+- Stripe-style mock checkout API with success/decline scenarios and persistent browser-local test receipts; no Stripe SDK or real charges.
 - Domain and browser tests, GitHub Actions validation workflow.
 - Native modal dialogs with keyboard focus containment, Escape/backdrop dismissal, and opener focus restoration.
 - Explicit investor-preview account switching across existing browser-local customer/provider workspaces.

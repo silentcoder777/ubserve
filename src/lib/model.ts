@@ -42,7 +42,7 @@ export type Booking = {
   notes: string;
   status: "requested" | "accepted" | "completed" | "cancelled";
   payment: "unpaid" | "mock-paid";
-  paymentReference?: string;
+  paymentReference?: string | null;
 };
 export type Review = {
   id: string;

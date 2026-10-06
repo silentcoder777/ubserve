@@ -40,7 +40,7 @@ const booking = z.object({
   notes: z.string(),
   status: z.enum(["requested", "accepted", "completed", "cancelled"]),
   payment: z.enum(["unpaid", "mock-paid"]),
-  paymentReference: z.string().optional(),
+  paymentReference: z.string().nullable().optional(),
 });
 
 const review = z.object({

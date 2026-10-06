@@ -180,6 +180,7 @@ export function requestBooking(
     notes: notes.trim(),
     status: "requested",
     payment: "unpaid",
+    paymentReference: null,
   };
   publish({ ...s, bookings: [booking, ...s.bookings] });
   return booking;
@@ -231,8 +232,8 @@ export function rescheduleBooking(
     hours,
     totalCents: quote(provider, hours),
     payment: "unpaid",
+    paymentReference: null,
   };
-  delete updated.paymentReference;
   publish({
     ...s,
     bookings: s.bookings.map((item) =>

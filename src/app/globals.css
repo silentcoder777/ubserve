@@ -1063,6 +1063,21 @@ fieldset {
   font-size: 11px;
   color: var(--muted);
 }
+.receipt-link {
+  display: block;
+  margin-top: 5px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #315f82;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.receipt-link:hover {
+  color: var(--navy);
+}
 .booking-actions {
   display: flex;
   gap: 15px;
@@ -1103,6 +1118,54 @@ fieldset {
   height: 60px;
   border-radius: 14px;
   margin-bottom: 15px;
+}
+.receipt-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 20px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #e8f5ee;
+  color: #205f45;
+}
+.receipt-banner span,
+.receipt-banner small {
+  display: block;
+}
+.receipt-banner small {
+  margin-top: 2px;
+}
+.receipt-details {
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.receipt-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.receipt-details div:last-child {
+  border-bottom: 0;
+}
+.receipt-details dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.receipt-details dd {
+  margin: 0;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+}
+.receipt-reference dd {
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
 }
 .test-card {
   display: flex;
@@ -1397,6 +1460,14 @@ blockquote p {
   }
   .confirmation-actions button {
     width: 100%;
+  }
+  .receipt-details div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .receipt-details dd {
+    text-align: left;
   }
   .booking-top h3 {
     font-size: 19px;

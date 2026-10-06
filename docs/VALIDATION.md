@@ -96,3 +96,10 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Accept, complete, cancel and decline transitions now announce a visible outcome so the presenter does not have to infer success from a badge change.
 - Browser coverage verifies that keeping a booking leaves it requested, confirms a customer cancellation, and confirms a provider decline on desktop and mobile.
 - The confirmation is a user-experience guard, not a server authorization or refund workflow; production transitions still require authenticated, transactional backend commands.
+
+## Persistent mock payment receipts — October 6, 2026
+
+- A successful test checkout stores the mock payment identifier already returned by the local API and exposes a customer-only receipt from the booking card.
+- The receipt shows the linked service, provider, simulated amount, simulated status and full mock identifier while repeatedly stating that no real charge occurred.
+- Browser coverage completes checkout, validates the receipt, reloads the production build, and reopens the same browser-local receipt on desktop and mobile.
+- The receipt is presentation evidence for the simulation only. It is not a Stripe receipt, settlement record or proof of payment, and no card data is collected.
