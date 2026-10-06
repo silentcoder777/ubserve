@@ -8,7 +8,7 @@ A responsive US local-services marketplace where customers choose providers by s
 
 - Create or reopen customer/provider demo accounts with a name and fictional email.
 - Publish/edit a provider profile, category, price, and weekly availability.
-- Discover providers through search, category/city filters, and recommended or price ordering.
+- Discover providers through service search, category/city filters, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
 - Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.

@@ -3,6 +3,7 @@ import {
   quote,
   assertSlot,
   availableStartTimes,
+  filterProviders,
   ranked,
   type Booking,
 } from "../src/lib/model";
@@ -147,3 +148,31 @@ it("balances rating confidence rather than promoting one perfect review", () =>
       "recommended",
     )[0].id,
   ).toBe(p.id));
+
+describe("provider discovery filters", () => {
+  it("combines category, text, city, pricing model and maximum price", () => {
+    const providers = filterProviders(seedProviders, {
+      category: "Cleaning",
+      query: "busy",
+      city: "ames",
+      pricing: "hourly",
+      maxPriceCents: 3200,
+    });
+    expect(providers.map((provider) => provider.name)).toEqual([
+      "Elena Rodriguez",
+    ]);
+  });
+
+  it("searches service descriptions and treats blank filters as unbounded", () => {
+    const providers = filterProviders(seedProviders, {
+      category: "All services",
+      query: "vehicle diagnostics",
+      city: " ",
+      pricing: "all",
+      maxPriceCents: null,
+    });
+    expect(providers.map((provider) => provider.name)).toEqual([
+      "Jordan Brooks",
+    ]);
+  });
+});

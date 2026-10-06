@@ -144,6 +144,33 @@ export function availableStartTimes(
   }
   return times;
 }
+export type ProviderFilters = {
+  category: (typeof categories)[number];
+  query: string;
+  city: string;
+  pricing: "all" | Provider["pricing"];
+  maxPriceCents: number | null;
+};
+export function filterProviders(
+  providers: Provider[],
+  filters: ProviderFilters,
+) {
+  const query = filters.query.trim().toLowerCase();
+  const city = filters.city.trim().toLowerCase();
+  return providers.filter(
+    (provider) =>
+      (filters.category === "All services" ||
+        provider.category === filters.category) &&
+      (!query ||
+        `${provider.name} ${provider.title} ${provider.category} ${provider.bio}`
+          .toLowerCase()
+          .includes(query)) &&
+      (!city || provider.city.toLowerCase().includes(city)) &&
+      (filters.pricing === "all" || provider.pricing === filters.pricing) &&
+      (filters.maxPriceCents === null ||
+        provider.priceCents <= filters.maxPriceCents),
+  );
+}
 export function ranked(providers: Provider[], sort: string) {
   return [...providers].sort((a, b) =>
     sort === "price"

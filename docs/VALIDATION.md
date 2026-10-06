@@ -73,3 +73,10 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Candidate times exclude the booking being edited but reuse the same working-hours, future-date and overlap checks used for initial booking.
 - Saving recalculates the price snapshot from the provider's current rate. Any previous simulated payment reference is cleared and the booking returns to unpaid so the demo never presents an old amount as paid.
 - Browser coverage pays in mock mode, changes the duration and time, verifies the refreshed total and unpaid state, and switches to the provider workspace to verify the updated request on desktop and mobile.
+
+## Pricing-aware provider discovery — October 6, 2026
+
+- Discovery composes service text, category, city, hourly/fixed pricing model and maximum listed-price constraints through one pure domain function.
+- Text matching includes provider service descriptions, so customers can discover relevant offerings without knowing a provider's name or exact category label.
+- Unit coverage verifies combined constraints and description matching. Browser coverage narrows fixed-price providers by a $75 maximum, resets every discovery constraint together, and checks horizontal document fit on desktop and mobile.
+- Listed-price filtering compares the provider's advertised amount; it does not estimate parts, ingredients, taxes, platform fees or total hourly job duration.

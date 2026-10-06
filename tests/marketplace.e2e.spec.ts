@@ -118,6 +118,33 @@ test("search empty state and responsive page fit", async ({
   ).toBe(true);
 });
 
+test("discovery combines pricing model and maximum price filters", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByLabel("Pricing model").selectOption("fixed");
+  await expect(page.getByRole("article")).toHaveCount(2);
+  await expect(
+    page.getByRole("heading", { name: "Jordan Brooks" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Chris Anderson" }),
+  ).toBeVisible();
+
+  await page.getByLabel("Maximum listed price").selectOption("7500");
+  await expect(page.getByRole("article")).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { name: "Chris Anderson" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Reset filters" }).click();
+  await expect(page.getByRole("article")).toHaveCount(6);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("dialogs contain keyboard focus, close with Escape, and restore the opener", async ({
   page,
 }) => {

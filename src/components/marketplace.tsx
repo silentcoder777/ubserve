@@ -25,6 +25,7 @@ import {
   money,
   quote,
   availableStartTimes,
+  filterProviders,
   ranked,
   type Provider,
   type Booking,
@@ -69,9 +70,15 @@ export default function Marketplace() {
   const state = useDemo(),
     account = state.accounts.find((a) => a.id === state.currentAccountId);
   const [view, setView] = useState<View>("discover"),
-    [category, setCategory] = useState("All services"),
+    [category, setCategory] = useState<(typeof categories)[number]>(
+      "All services",
+    ),
     [query, setQuery] = useState(""),
     [city, setCity] = useState(""),
+    [pricingFilter, setPricingFilter] = useState<
+      "all" | Provider["pricing"]
+    >("all"),
+    [maxPriceCents, setMaxPriceCents] = useState<number | null>(null),
     [sort, setSort] = useState("recommended");
   const [auth, setAuth] = useState(false),
     [authRole, setAuthRole] = useState<"customer" | "provider">("customer"),
@@ -97,16 +104,28 @@ export default function Marketplace() {
     }
   }
   const providers = ranked(
-    state.providers.filter(
-      (p) =>
-        (category === "All services" || p.category === category) &&
-        `${p.name} ${p.title} ${p.category}`
-          .toLowerCase()
-          .includes(query.toLowerCase()) &&
-        p.city.toLowerCase().includes(city.toLowerCase()),
-    ),
+    filterProviders(state.providers, {
+      category,
+      query,
+      city,
+      pricing: pricingFilter,
+      maxPriceCents,
+    }),
     sort,
   );
+  const hasDiscoveryFilters =
+    category !== "All services" ||
+    Boolean(query.trim()) ||
+    Boolean(city.trim()) ||
+    pricingFilter !== "all" ||
+    maxPriceCents !== null;
+  function clearDiscoveryFilters() {
+    setQuery("");
+    setCity("");
+    setCategory("All services");
+    setPricingFilter("all");
+    setMaxPriceCents(null);
+  }
   const profile = state.providers.find((p) => p.accountId === account?.id);
   const availableTimes = selected
     ? availableStartTimes(selected, bookingDate, hours, state.bookings)
@@ -454,6 +473,54 @@ export default function Marketplace() {
                 );
               })}
             </div>
+            <div
+              className="discovery-filters"
+              role="group"
+              aria-label="Price filters"
+            >
+              <span>Refine by price</span>
+              <label>
+                Pricing model
+                <select
+                  aria-label="Pricing model"
+                  value={pricingFilter}
+                  onChange={(event) =>
+                    setPricingFilter(
+                      event.target.value as "all" | Provider["pricing"],
+                    )
+                  }
+                >
+                  <option value="all">Hourly or fixed</option>
+                  <option value="hourly">Hourly only</option>
+                  <option value="fixed">Fixed price only</option>
+                </select>
+              </label>
+              <label>
+                Maximum listed price
+                <select
+                  aria-label="Maximum listed price"
+                  value={maxPriceCents ?? "any"}
+                  onChange={(event) =>
+                    setMaxPriceCents(
+                      event.target.value === "any"
+                        ? null
+                        : Number(event.target.value),
+                    )
+                  }
+                >
+                  <option value="any">Any price</option>
+                  <option value="4000">Up to $40</option>
+                  <option value="6000">Up to $60</option>
+                  <option value="7500">Up to $75</option>
+                  <option value="10000">Up to $100</option>
+                </select>
+              </label>
+              {hasDiscoveryFilters && (
+                <button className="text-button" onClick={clearDiscoveryFilters}>
+                  Reset filters
+                </button>
+              )}
+            </div>
             <section id="results">
               <div className="section-head">
                 <div>
@@ -553,11 +620,7 @@ export default function Marketplace() {
                   <p>Try another name, category, or city.</p>
                   <button
                     className="secondary"
-                    onClick={() => {
-                      setQuery("");
-                      setCity("");
-                      setCategory("All services");
-                    }}
+                    onClick={clearDiscoveryFilters}
                   >
                     Clear filters
                   </button>
