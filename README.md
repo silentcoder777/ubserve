@@ -12,6 +12,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
+- Confirm customer cancellations and provider declines before changing booking state; show clear lifecycle outcome messages.
 - Recalculate the booking price and reset simulated payment state when a customer reschedules a pending request.
 - Filter customer and provider dashboards by booking lifecycle status with live counts.
 - Review role-scoped booking summaries for active work, completion, simulated payments, and non-cancelled demo value.

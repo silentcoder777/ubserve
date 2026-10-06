@@ -334,6 +334,26 @@ test("booking dashboard filters appointments by lifecycle status", async ({
     .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
     .getByRole("button", { name: "Cancel" })
     .click();
+  const cancellation = page.getByRole("dialog", {
+    name: "Cancel this booking?",
+  });
+  await expect(cancellation).toContainText("Cleaning with Maya Thompson");
+  await cancellation.getByRole("button", { name: "Keep booking" }).click();
+  await expect(
+    page.getByRole("button", { name: "Requested 2" }),
+  ).toBeVisible();
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "Cancel" })
+    .click();
+  await page
+    .getByRole("dialog", { name: "Cancel this booking?" })
+    .getByRole("button", { name: "Cancel booking" })
+    .click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Booking cancelled" }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "All 2" })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Requested 1" }),
@@ -356,6 +376,40 @@ test("booking dashboard filters appointments by lifecycle status", async ({
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
+});
+
+test("provider explicitly confirms declining a booking request", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+  await page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) })
+    .getByRole("button", { name: "View & book" })
+    .click();
+  await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+  await page.getByRole("button", { name: "Request booking" }).click();
+  await page
+    .getByRole("dialog", { name: "Test checkout" })
+    .getByRole("button", { name: "Close dialog" })
+    .click();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  await page.getByRole("button", { name: "Decline" }).click();
+  const decline = page.getByRole("dialog", {
+    name: "Decline this request?",
+  });
+  await expect(decline).toContainText("Cleaning with Alex Demo");
+  await decline.getByRole("button", { name: "Decline request" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Request declined" }),
+  ).toBeVisible();
+  await expect(page.getByText("cancelled", { exact: true })).toBeVisible();
 });
 
 test("booking summaries stay scoped to the active customer or provider", async ({

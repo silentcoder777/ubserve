@@ -88,3 +88,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Cancelled bookings remain visible in lifecycle filters but do not contribute to mock-paid or value totals.
 - Unit coverage verifies lifecycle/value aggregation. Browser coverage creates bookings with two providers, verifies the customer's combined summary, then switches to Maya and verifies that her provider summary contains only her request on desktop and mobile.
 - Values are fictional booking totals for the investor demo, not revenue, settled payments, taxes, fees or provider payouts.
+
+## Guarded booking actions — October 6, 2026
+
+- Customer cancellation and provider decline actions now open a native confirmation dialog before changing the browser-local booking state.
+- The dialog identifies the service, other participant, appointment time and demo total, and states that no real payment or refund occurs.
+- Accept, complete, cancel and decline transitions now announce a visible outcome so the presenter does not have to infer success from a badge change.
+- Browser coverage verifies that keeping a booking leaves it requested, confirms a customer cancellation, and confirms a provider decline on desktop and mobile.
+- The confirmation is a user-experience guard, not a server authorization or refund workflow; production transitions still require authenticated, transactional backend commands.

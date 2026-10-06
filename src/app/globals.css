@@ -1068,6 +1068,31 @@ fieldset {
   gap: 15px;
   align-items: center;
 }
+.confirmation-summary {
+  display: grid;
+  gap: 7px;
+  margin: 20px 0 14px;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--cream);
+  color: var(--muted);
+  font-size: 13px;
+}
+.confirmation-summary b,
+.confirmation-summary strong {
+  color: var(--ink);
+}
+.confirmation-summary strong {
+  margin-top: 3px;
+  font-size: 20px;
+}
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
 .checkout-icon {
   display: flex;
   align-items: center;
@@ -1366,6 +1391,12 @@ blockquote p {
   }
   .booking-actions {
     flex-wrap: wrap;
+  }
+  .confirmation-actions {
+    flex-direction: column-reverse;
+  }
+  .confirmation-actions button {
+    width: 100%;
   }
   .booking-top h3 {
     font-size: 19px;

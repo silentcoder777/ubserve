@@ -85,6 +85,9 @@ export default function Marketplace() {
     [authRole, setAuthRole] = useState<"customer" | "provider">("customer"),
     [selected, setSelected] = useState<Provider | null>(null),
     [reschedule, setReschedule] = useState<Booking | null>(null),
+    [pendingCancellation, setPendingCancellation] = useState<Booking | null>(
+      null,
+    ),
     [review, setReview] = useState<Booking | null>(null),
     [checkout, setCheckout] = useState<Booking | null>(null),
     [notice, setNotice] = useState(""),
@@ -299,6 +302,24 @@ export default function Marketplace() {
     } finally {
       setBusy(false);
     }
+  }
+  function changeBookingStatus(
+    booking: Booking,
+    status: Booking["status"],
+  ) {
+    attempt(() => {
+      updateBooking(booking.id, status);
+      setPendingCancellation(null);
+      setNotice(
+        status === "accepted"
+          ? "Booking accepted. The customer can see the confirmed status."
+          : status === "completed"
+            ? "Service marked complete. The customer can now leave a review."
+            : account?.role === "provider" && booking.status === "requested"
+              ? "Request declined. The customer can see the cancelled status."
+              : "Booking cancelled. No real payment or refund was processed.",
+      );
+    });
   }
   return (
     <>
@@ -1011,9 +1032,7 @@ export default function Marketplace() {
                           b.status === "requested" && (
                             <button
                               className="primary small"
-                              onClick={() =>
-                                attempt(() => updateBooking(b.id, "accepted"))
-                              }
+                              onClick={() => changeBookingStatus(b, "accepted")}
                             >
                               Accept request
                             </button>
@@ -1023,7 +1042,7 @@ export default function Marketplace() {
                             <button
                               className="primary small"
                               onClick={() =>
-                                attempt(() => updateBooking(b.id, "completed"))
+                                changeBookingStatus(b, "completed")
                               }
                             >
                               Mark complete
@@ -1099,9 +1118,10 @@ export default function Marketplace() {
                         {["requested", "accepted"].includes(b.status) && (
                           <button
                             className="text-button"
-                            onClick={() =>
-                              attempt(() => updateBooking(b.id, "cancelled"))
-                            }
+                            onClick={() => {
+                              setPendingCancellation(b);
+                              setError("");
+                            }}
                           >
                             {account.role === "provider" &&
                             b.status === "requested"
@@ -1554,6 +1574,75 @@ export default function Marketplace() {
               Save new time <CalendarDays size={18} />
             </button>
           </form>
+        </Modal>
+      )}
+      {pendingCancellation && (
+        <Modal
+          title={
+            account?.role === "provider" &&
+            pendingCancellation.status === "requested"
+              ? "Decline this request?"
+              : "Cancel this booking?"
+          }
+          onClose={() => {
+            setPendingCancellation(null);
+            setError("");
+          }}
+        >
+          <p className="muted">
+            {account?.role === "provider" &&
+            pendingCancellation.status === "requested"
+              ? "The customer will see this request as cancelled and the time will become available again."
+              : "The appointment will be cancelled and the time will become available again."}
+          </p>
+          <div className="confirmation-summary">
+            <span>
+              {pendingCancellation.service} with{" "}
+              <b>
+                {account?.role === "provider"
+                  ? state.accounts.find(
+                      (candidate) =>
+                        candidate.id === pendingCancellation.customerId,
+                    )?.name
+                  : pendingCancellation.providerName}
+              </b>
+            </span>
+            <span>
+              {new Date(pendingCancellation.startsAt).toLocaleString(
+                undefined,
+                { dateStyle: "medium", timeStyle: "short" },
+              )}
+            </span>
+            <strong>{money(pendingCancellation.totalCents)}</strong>
+          </div>
+          <p className="fine-print">
+            This is browser-local demo data. No real payment or refund will be
+            processed.
+          </p>
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="confirmation-actions">
+            <button
+              className="secondary"
+              onClick={() => setPendingCancellation(null)}
+            >
+              Keep booking
+            </button>
+            <button
+              className="primary"
+              onClick={() =>
+                changeBookingStatus(pendingCancellation, "cancelled")
+              }
+            >
+              {account?.role === "provider" &&
+              pendingCancellation.status === "requested"
+                ? "Decline request"
+                : "Cancel booking"}
+            </button>
+          </div>
         </Modal>
       )}
       {checkout && (
