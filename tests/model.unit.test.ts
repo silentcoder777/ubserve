@@ -4,6 +4,7 @@ import {
   assertSlot,
   availableStartTimes,
   filterProviders,
+  summarizeBookings,
   ranked,
   type Booking,
 } from "../src/lib/model";
@@ -174,5 +175,41 @@ describe("provider discovery filters", () => {
     expect(providers.map((provider) => provider.name)).toEqual([
       "Jordan Brooks",
     ]);
+  });
+});
+
+it("summarizes lifecycle, mock-payment and non-cancelled booking value", () => {
+  const summary = summarizeBookings([
+    booking,
+    {
+      ...booking,
+      id: "accepted",
+      status: "accepted",
+      payment: "mock-paid",
+      totalCents: 9000,
+    },
+    {
+      ...booking,
+      id: "completed",
+      status: "completed",
+      payment: "mock-paid",
+      totalCents: 5000,
+    },
+    {
+      ...booking,
+      id: "cancelled",
+      status: "cancelled",
+      payment: "mock-paid",
+      totalCents: 12000,
+    },
+  ]);
+  expect(summary).toEqual({
+    active: 2,
+    requested: 1,
+    accepted: 1,
+    completed: 1,
+    cancelled: 1,
+    mockPaid: 2,
+    bookedValueCents: 21000,
   });
 });

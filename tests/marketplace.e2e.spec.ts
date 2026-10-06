@@ -358,6 +358,65 @@ test("booking dashboard filters appointments by lifecycle status", async ({
   ).toBe(true);
 });
 
+test("booking summaries stay scoped to the active customer or provider", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Alex Demo", "alex@example.test");
+
+  for (const provider of ["Maya Thompson", "Arjun Patel"]) {
+    await page
+      .getByRole("article")
+      .filter({ has: page.getByRole("heading", { name: provider }) })
+      .getByRole("button", { name: "View & book" })
+      .click();
+    await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+    await page.getByRole("button", { name: "Request booking" }).click();
+    if (provider === "Arjun Patel")
+      await page.getByRole("button", { name: /Simulate payment/ }).click();
+    else {
+      await page
+        .getByRole("dialog", { name: "Test checkout" })
+        .getByRole("button", { name: "Close dialog" })
+        .click();
+      await page.getByRole("button", { name: "Ubserve home" }).click();
+    }
+  }
+
+  const customerSummary = page.getByRole("region", {
+    name: "Booking summary",
+  });
+  await expect(
+    customerSummary.getByRole("article", { name: "Active bookings: 2" }),
+  ).toBeVisible();
+  await expect(
+    customerSummary.getByRole("article", { name: "Mock paid: 1" }),
+  ).toBeVisible();
+  await expect(
+    customerSummary.getByRole("article", { name: "Booked value: $160" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await page
+    .getByRole("dialog", { name: "Switch demo view" })
+    .getByRole("button", { name: "Maya Thompson provider" })
+    .click();
+  const providerSummary = page.getByRole("region", {
+    name: "Booking summary",
+  });
+  await expect(
+    providerSummary.getByRole("article", { name: "New requests: 1" }),
+  ).toBeVisible();
+  await expect(
+    providerSummary.getByRole("article", { name: "Pipeline value: $70" }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("customer reschedules a requested booking and refreshes its mock quote", async ({
   page,
 }) => {
@@ -397,5 +456,10 @@ test("customer reschedules a requested booking and refreshes its mock quote", as
     .click();
   await expect(page.getByRole("heading", { name: "Alex Demo" })).toBeVisible();
   await expect(page.getByText("1.5 hours", { exact: true })).toBeVisible();
-  await expect(page.getByText("$52.50", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole("article")
+      .filter({ has: page.getByRole("heading", { name: "Alex Demo" }) })
+      .getByText("$52.50", { exact: true }),
+  ).toBeVisible();
 });

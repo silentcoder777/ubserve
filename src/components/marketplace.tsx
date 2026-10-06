@@ -26,6 +26,7 @@ import {
   quote,
   availableStartTimes,
   filterProviders,
+  summarizeBookings,
   ranked,
   type Provider,
   type Booking,
@@ -148,6 +149,53 @@ export default function Marketplace() {
       : b.customerId === account?.id,
   );
   const pending = bookings.filter((b) => b.status === "requested").length;
+  const bookingSummary = summarizeBookings(bookings);
+  const bookingSummaryItems =
+    account?.role === "provider"
+      ? [
+          {
+            label: "New requests",
+            value: String(bookingSummary.requested),
+            detail: "Awaiting your decision",
+          },
+          {
+            label: "Accepted visits",
+            value: String(bookingSummary.accepted),
+            detail: "Confirmed work",
+          },
+          {
+            label: "Completed jobs",
+            value: String(bookingSummary.completed),
+            detail: "Finished services",
+          },
+          {
+            label: "Pipeline value",
+            value: money(bookingSummary.bookedValueCents),
+            detail: "Non-cancelled demo totals",
+          },
+        ]
+      : [
+          {
+            label: "Active bookings",
+            value: String(bookingSummary.active),
+            detail: "Requested or accepted",
+          },
+          {
+            label: "Completed services",
+            value: String(bookingSummary.completed),
+            detail: "Ready for review",
+          },
+          {
+            label: "Mock paid",
+            value: String(bookingSummary.mockPaid),
+            detail: "Simulation only",
+          },
+          {
+            label: "Booked value",
+            value: money(bookingSummary.bookedValueCents),
+            detail: "Non-cancelled demo totals",
+          },
+        ];
   const visibleBookings =
     bookingFilter === "all"
       ? bookings
@@ -860,6 +908,21 @@ export default function Marketplace() {
               </div>
             ) : (
               <>
+                <section
+                  className="booking-summary"
+                  aria-label="Booking summary"
+                >
+                  {bookingSummaryItems.map((item) => (
+                    <article
+                      key={item.label}
+                      aria-label={`${item.label}: ${item.value}`}
+                    >
+                      <span>{item.label}</span>
+                      <strong>{item.value}</strong>
+                      <small>{item.detail}</small>
+                    </article>
+                  ))}
+                </section>
                 <div
                   className="booking-filters"
                   role="group"

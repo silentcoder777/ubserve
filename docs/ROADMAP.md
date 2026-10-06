@@ -11,6 +11,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Customer rescheduling for requested bookings with availability revalidation, refreshed price snapshots, and explicit mock-payment reset.
 - Provider acceptance/completion, cancellation, one review per completed booking.
 - Customer/provider booking dashboards with lifecycle counts and status filters.
+- Role-scoped customer/provider summary metrics derived from current bookings and non-cancelled demo value.
 - Stripe-style mock checkout API with success/decline scenarios; no Stripe SDK or real charges.
 - Domain and browser tests, GitHub Actions validation workflow.
 - Native modal dialogs with keyboard focus containment, Escape/backdrop dismissal, and opener focus restoration.

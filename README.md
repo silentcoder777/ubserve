@@ -14,6 +14,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
 - Recalculate the booking price and reset simulated payment state when a customer reschedules a pending request.
 - Filter customer and provider dashboards by booking lifecycle status with live counts.
+- Review role-scoped booking summaries for active work, completion, simulated payments, and non-cancelled demo value.
 - Submit one review after a completed service; update provider ratings.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges.
 - Use keyboard-accessible dialogs: contained focus, Escape dismissal, and focus restoration.

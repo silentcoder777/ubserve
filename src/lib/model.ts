@@ -171,6 +171,29 @@ export function filterProviders(
         provider.priceCents <= filters.maxPriceCents),
   );
 }
+export function summarizeBookings(bookings: Booking[]) {
+  return bookings.reduce(
+    (summary, booking) => {
+      summary[booking.status] += 1;
+      if (booking.status === "requested" || booking.status === "accepted")
+        summary.active += 1;
+      if (booking.status !== "cancelled") {
+        summary.bookedValueCents += booking.totalCents;
+        if (booking.payment === "mock-paid") summary.mockPaid += 1;
+      }
+      return summary;
+    },
+    {
+      active: 0,
+      requested: 0,
+      accepted: 0,
+      completed: 0,
+      cancelled: 0,
+      mockPaid: 0,
+      bookedValueCents: 0,
+    },
+  );
+}
 export function ranked(providers: Provider[], sort: string) {
   return [...providers].sort((a, b) =>
     sort === "price"

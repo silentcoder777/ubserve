@@ -80,3 +80,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Text matching includes provider service descriptions, so customers can discover relevant offerings without knowing a provider's name or exact category label.
 - Unit coverage verifies combined constraints and description matching. Browser coverage narrows fixed-price providers by a $75 maximum, resets every discovery constraint together, and checks horizontal document fit on desktop and mobile.
 - Listed-price filtering compares the provider's advertised amount; it does not estimate parts, ingredients, taxes, platform fees or total hourly job duration.
+
+## Role-scoped booking summaries — October 6, 2026
+
+- Customer summaries show active bookings, completed services, non-cancelled mock-paid count and non-cancelled booked value. Provider summaries show new requests, accepted visits, completed jobs and pipeline value.
+- Every metric is derived from the booking collection already scoped to the active account; no duplicate counters or totals are persisted.
+- Cancelled bookings remain visible in lifecycle filters but do not contribute to mock-paid or value totals.
+- Unit coverage verifies lifecycle/value aggregation. Browser coverage creates bookings with two providers, verifies the customer's combined summary, then switches to Maya and verifies that her provider summary contains only her request on desktop and mobile.
+- Values are fictional booking totals for the investor demo, not revenue, settled payments, taxes, fees or provider payouts.
