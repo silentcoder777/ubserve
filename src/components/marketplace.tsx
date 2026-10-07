@@ -105,6 +105,8 @@ export default function Marketplace() {
   const [hours, setHours] = useState(2);
   const [bookingDate, setBookingDate] = useState(tomorrow());
   const [bookingTime, setBookingTime] = useState("10:00");
+  const [bookingAddress, setBookingAddress] = useState("");
+  const [bookingNotes, setBookingNotes] = useState("");
   function attempt(action: () => void) {
     setError("");
     try {
@@ -144,6 +146,27 @@ export default function Marketplace() {
     setPricingFilter("all");
     setMaxPriceCents(null);
     setSavedOnly(false);
+  }
+  function openProvider(
+    provider: Provider,
+    defaults?: Pick<Booking, "hours" | "address" | "notes">,
+  ) {
+    const duration =
+      defaults?.hours ?? (provider.pricing === "fixed" ? 1 : 2);
+    const date = tomorrow();
+    const times = availableStartTimes(
+      provider,
+      date,
+      duration,
+      state.bookings,
+    );
+    setSelected(provider);
+    setHours(duration);
+    setBookingDate(date);
+    setBookingTime(times[0] ?? "");
+    setBookingAddress(defaults?.address ?? "");
+    setBookingNotes(defaults?.notes ?? "");
+    setError("");
   }
   const profile = state.providers.find((p) => p.accountId === account?.id);
   const availableTimes = selected
@@ -252,6 +275,8 @@ export default function Marketplace() {
         String(f.get("notes")),
       );
       setSelected(null);
+      setBookingAddress("");
+      setBookingNotes("");
       setView("bookings");
       setNotice(
         "Booking requested. Try the mock checkout or wait for the provider to accept.",
@@ -727,21 +752,7 @@ export default function Marketplace() {
                           </div>
                           <button
                             className="profile-link"
-                            onClick={() => {
-                              const duration = p.pricing === "fixed" ? 1 : 2;
-                              const date = tomorrow();
-                              const times = availableStartTimes(
-                                p,
-                                date,
-                                duration,
-                                state.bookings,
-                              );
-                              setSelected(p);
-                              setHours(duration);
-                              setBookingDate(date);
-                              setBookingTime(times[0] ?? "");
-                              setError("");
-                            }}
+                            onClick={() => openProvider(p)}
                           >
                             View & book <ArrowUpRight size={17} />
                           </button>
@@ -1206,6 +1217,23 @@ export default function Marketplace() {
                                 : "View customer review"}
                             </button>
                           )}
+                        {account.role === "customer" &&
+                          b.status === "completed" &&
+                          state.providers.some(
+                            (provider) => provider.id === b.providerId,
+                          ) && (
+                            <button
+                              className="secondary small"
+                              onClick={() => {
+                                const provider = state.providers.find(
+                                  (candidate) => candidate.id === b.providerId,
+                                );
+                                if (provider) openProvider(provider, b);
+                              }}
+                            >
+                              Book again
+                            </button>
+                          )}
                         {["requested", "accepted"].includes(b.status) && (
                           <button
                             className="text-button"
@@ -1364,6 +1392,8 @@ export default function Marketplace() {
           title={selected.name}
           onClose={() => {
             setSelected(null);
+            setBookingAddress("");
+            setBookingNotes("");
             setError("");
           }}
         >
@@ -1523,6 +1553,8 @@ export default function Marketplace() {
                 required
                 placeholder="123 Main St, Ames, IA"
                 maxLength={200}
+                value={bookingAddress}
+                onChange={(event) => setBookingAddress(event.target.value)}
               />
             </Field>
             <Field label="Anything the provider should know? (optional)">
@@ -1531,6 +1563,8 @@ export default function Marketplace() {
                 rows={2}
                 maxLength={1000}
                 placeholder="Your priorities, parking instructions, or questions"
+                value={bookingNotes}
+                onChange={(event) => setBookingNotes(event.target.value)}
               />
             </Field>
             <div className="estimate">

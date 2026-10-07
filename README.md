@@ -11,6 +11,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Discover providers through service search, category/city filters, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
 - Save providers to a customer-specific shortlist and filter discovery to saved profiles.
 - Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
+- Rebook a completed service with the previous visit details prefilled and a fresh availability/price check.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
 - Confirm customer cancellations and provider declines before changing booking state; show clear lifecycle outcome messages.
@@ -60,7 +61,8 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 4. Choose **Switch demo view** in the preview bar and select Maya Thompson. This is a presentation shortcut; the normal sign-out/reopen flow remains available.
 5. Open **My bookings**, accept the request, and mark it complete.
 6. Switch back to the customer workspace, view bookings, and leave a review.
-7. To show onboarding, create another provider account and publish a new profile.
+7. Choose **Book again** to show the repeat-service flow with fresh availability and the prior visit details.
+8. To show onboarding, create another provider account and publish a new profile.
 
 **Reset demo data** clears all locally saved accounts, profiles, bookings, reviews, and provider shortlists. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
 

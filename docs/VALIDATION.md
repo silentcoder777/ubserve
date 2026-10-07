@@ -120,3 +120,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Runtime validation migrates older snapshots to an empty shortlist and rejects missing, provider-owned or duplicate saved relationships.
 - Browser coverage saves Maya, reloads, filters to the one saved provider, removes her, clears the resulting empty filter and checks mobile/desktop width.
 - Production requires authenticated customer ownership, a unique `(customer_id, provider_id)` constraint and server-side paginated discovery queries.
+
+## Completed-service rebooking — October 7, 2026
+
+- A customer can choose **Book again** on a completed appointment while the provider profile still exists.
+- Rebooking opens the normal provider request dialog with the previous duration, service address and notes prefilled.
+- The date starts at tomorrow, availability is recalculated against current bookings, and the estimate uses the provider's current listed price; payment and lifecycle state are never copied.
+- Browser coverage completes and reviews a service, opens the repeat flow, and verifies the prefilled details and fresh quote on desktop and mobile.
+- Production should offer an explicit saved-address policy and immutable historical price display while always creating a separate authorized booking record.

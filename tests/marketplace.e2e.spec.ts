@@ -36,6 +36,9 @@ test("customer books, tests decline/success, provider completes, customer review
     .getByRole("button", { name: "View & book" })
     .click();
   await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
+  await page
+    .getByLabel("Anything the provider should know? (optional)")
+    .fill("Please focus on the kitchen.");
   await page.getByRole("button", { name: "Request booking" }).click();
   await expect(
     page.getByRole("dialog", { name: "Test checkout" }),
@@ -91,6 +94,17 @@ test("customer books, tests decline/success, provider completes, customer review
     "Great service and excellent attention to detail.",
   );
   await savedReview.getByRole("button", { name: "Done" }).click();
+
+  await page.getByRole("button", { name: "Book again" }).click();
+  const rebook = page.getByRole("dialog", { name: "Maya Thompson" });
+  await expect(rebook.getByLabel("Service address")).toHaveValue(
+    "123 Main Street, Ames, IA",
+  );
+  await expect(
+    rebook.getByLabel("Anything the provider should know? (optional)"),
+  ).toHaveValue("Please focus on the kitchen.");
+  await expect(rebook).toContainText("$70");
+  await rebook.getByRole("button", { name: "Close dialog" }).click();
 
   await page.getByRole("button", { name: "Switch demo view" }).click();
   await page
