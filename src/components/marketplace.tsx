@@ -29,6 +29,7 @@ import {
   availableStartTimes,
   filterProviders,
   summarizeBookings,
+  sortBookingsForDashboard,
   ranked,
   type Provider,
   type Booking,
@@ -290,10 +291,15 @@ export default function Marketplace() {
             detail: "Non-cancelled demo totals",
           },
         ];
+  const sortedBookings = sortBookingsForDashboard(bookings);
+  const nextBookingId = sortedBookings.find(
+    (booking) =>
+      booking.status === "requested" || booking.status === "accepted",
+  )?.id;
   const visibleBookings =
     bookingFilter === "all"
-      ? bookings
-      : bookings.filter((booking) => booking.status === bookingFilter);
+      ? sortedBookings
+      : sortedBookings.filter((booking) => booking.status === bookingFilter);
   const reviewsByBooking = new Map(
     state.reviews.map((savedReview) => [savedReview.bookingId, savedReview]),
   );
@@ -1158,7 +1164,12 @@ export default function Marketplace() {
                             : b.providerName}
                         </h3>
                       </div>
-                      <span className={`status ${b.status}`}>{b.status}</span>
+                      <div className="booking-statuses">
+                        {b.id === nextBookingId && (
+                          <span className="next-booking">Next up</span>
+                        )}
+                        <span className={`status ${b.status}`}>{b.status}</span>
+                      </div>
                     </div>
                     <div className="booking-details">
                       <span>

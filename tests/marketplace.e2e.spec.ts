@@ -54,6 +54,7 @@ test("customer books, tests decline/success, provider completes, customer review
   const customerCard = page
     .getByRole("article")
     .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) });
+  await expect(customerCard.getByText("Next up", { exact: true })).toBeVisible();
   await expect(
     customerCard
       .getByRole("list", { name: "Booking progress" })
@@ -82,6 +83,7 @@ test("customer books, tests decline/success, provider completes, customer review
   const providerCard = page
     .getByRole("article")
     .filter({ has: page.getByRole("heading", { name: "Alex Demo" }) });
+  await expect(providerCard.getByText("Next up", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Accept request" }).click();
   await expect(
     providerCard
@@ -94,6 +96,9 @@ test("customer books, tests decline/success, provider completes, customer review
       .getByRole("list", { name: "Booking progress" })
       .locator('[aria-current="step"]'),
   ).toHaveText("Completed");
+  await expect(providerCard.getByText("Next up", { exact: true })).toHaveCount(
+    0,
+  );
   await page.getByRole("button", { name: "Sign out" }).click();
   await account(page, "Alex Demo", "alex@example.test");
   await bookings(page);

@@ -17,7 +17,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Confirm customer cancellations and provider declines before changing booking state; paid test bookings record a clearly labelled simulated refund with no money movement.
 - Recalculate the booking price and reset simulated payment state when a customer reschedules a pending request.
 - Follow each booking through an accessible Requested → Accepted → Completed progress indicator, with a distinct cancelled/slot-released state.
-- Filter customer and provider dashboards by booking lifecycle status with live counts.
+- Filter customer and provider dashboards by booking lifecycle status with live counts; actionable work is ordered by appointment time and the nearest booking is marked **Next up**.
 - Review role-scoped booking summaries for active work, completion, simulated payments, and non-cancelled demo value.
 - Submit one review after a completed service, update provider ratings, and reopen saved feedback from customer or provider dashboards.
 - Run simulated Stripe-style checkout success/decline scenarios without card entry or real charges; reopen a persisted test receipt and retain its mock reference when cancellation records a simulated refund.

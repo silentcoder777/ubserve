@@ -6,6 +6,7 @@ import {
   bookingQuoteLabel,
   filterProviders,
   summarizeBookings,
+  sortBookingsForDashboard,
   ranked,
   type Booking,
 } from "../src/lib/model";
@@ -250,4 +251,44 @@ it("summarizes lifecycle, mock-payment and non-cancelled booking value", () => {
     mockPaid: 2,
     bookedValueCents: 21000,
   });
+});
+
+it("orders upcoming work first and history newest first", () => {
+  const bookings = [
+    {
+      ...booking,
+      id: "completed-older",
+      status: "completed" as const,
+      startsAt: "2030-01-08T10:00:00.000Z",
+    },
+    {
+      ...booking,
+      id: "accepted-later",
+      status: "accepted" as const,
+      startsAt: "2030-01-12T10:00:00.000Z",
+    },
+    {
+      ...booking,
+      id: "cancelled-newer",
+      status: "cancelled" as const,
+      startsAt: "2030-01-10T10:00:00.000Z",
+    },
+    {
+      ...booking,
+      id: "requested-next",
+      startsAt: "2030-01-09T10:00:00.000Z",
+    },
+  ];
+  expect(sortBookingsForDashboard(bookings).map((item) => item.id)).toEqual([
+    "requested-next",
+    "accepted-later",
+    "cancelled-newer",
+    "completed-older",
+  ]);
+  expect(bookings.map((item) => item.id)).toEqual([
+    "completed-older",
+    "accepted-later",
+    "cancelled-newer",
+    "requested-next",
+  ]);
 });

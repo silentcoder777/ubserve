@@ -133,6 +133,14 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Browser coverage verifies requested, accepted, completed and cancelled progress states across the existing desktop and mobile lifecycle journeys.
 - This is a presentation of current state, not an audit history. Production should persist immutable transition events with actor, timestamp and reason when a full timeline is required.
 
+## Booking dashboard ordering — October 7, 2026
+
+- Requested and accepted bookings appear before completed and cancelled history. Active work is ordered by the nearest appointment, while terminal history is ordered newest first.
+- The first role-scoped active booking receives one **Next up** marker. Completing or cancelling it removes the marker and promotes the next active appointment without changing persisted data.
+- A pure domain function returns a sorted copy, so status filters and summaries continue to derive from the original authoritative booking records. Unit coverage verifies ordering and confirms the input array is not mutated.
+- Browser coverage verifies the marker in customer and provider dashboards and confirms it disappears when the only active booking is completed at desktop and mobile viewport sizes.
+- Production should apply equivalent ordering in a paginated database query and define behavior for overdue work; this browser-local demo does not implement reminders or automatic no-show transitions.
+
 ## Role-aware saved reviews — October 6, 2026
 
 - After a customer submits the single allowed review for a completed booking, the dashboard replaces the submission action with a persistent review-detail action.

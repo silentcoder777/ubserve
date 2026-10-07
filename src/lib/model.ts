@@ -218,6 +218,19 @@ export function summarizeBookings(bookings: Booking[]) {
     },
   );
 }
+export function sortBookingsForDashboard(bookings: Booking[]) {
+  const activeStatuses = new Set<Booking["status"]>(["requested", "accepted"]);
+  return [...bookings].sort((a, b) => {
+    const aActive = activeStatuses.has(a.status);
+    const bActive = activeStatuses.has(b.status);
+    if (aActive !== bActive) return aActive ? -1 : 1;
+    const timeDifference =
+      aActive && bActive
+        ? Date.parse(a.startsAt) - Date.parse(b.startsAt)
+        : Date.parse(b.startsAt) - Date.parse(a.startsAt);
+    return timeDifference || a.id.localeCompare(b.id);
+  });
+}
 export function ranked(providers: Provider[], sort: string) {
   return [...providers].sort((a, b) =>
     sort === "price"
