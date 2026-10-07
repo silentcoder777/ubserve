@@ -62,7 +62,7 @@ test("customer books, tests decline/success, provider completes, customer review
   await page.getByRole("button", { name: "View test receipt" }).click();
   await expect(
     page.getByRole("dialog", { name: "Test payment receipt" }),
-  ).toContainText("No real charge was made");
+  ).toContainText("No real charge or refund occurred");
   await page.getByRole("button", { name: "Done" }).click();
   await page.getByRole("button", { name: "Sign out" }).click();
   await account(page, "Maya Thompson", "p1@example.test", true);
