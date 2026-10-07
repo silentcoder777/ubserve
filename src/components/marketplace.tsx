@@ -19,6 +19,7 @@ import {
   CreditCard,
   CircleUserRound,
   UsersRound,
+  Heart,
 } from "lucide-react";
 import {
   categories,
@@ -45,6 +46,7 @@ import {
   markPaid,
   resetDemo,
   switchDemoAccount,
+  toggleSavedProvider,
 } from "@/lib/store";
 const icons = { Cleaning: Sparkles, Cooking: ChefHat, "Auto repair": Wrench };
 type View = "discover" | "bookings" | "profile";
@@ -81,7 +83,8 @@ export default function Marketplace() {
       "all" | Provider["pricing"]
     >("all"),
     [maxPriceCents, setMaxPriceCents] = useState<number | null>(null),
-    [sort, setSort] = useState("recommended");
+    [sort, setSort] = useState("recommended"),
+    [savedOnly, setSavedOnly] = useState(false);
   const [auth, setAuth] = useState(false),
     [authRole, setAuthRole] = useState<"customer" | "provider">("customer"),
     [selected, setSelected] = useState<Provider | null>(null),
@@ -110,6 +113,13 @@ export default function Marketplace() {
       setError(e instanceof Error ? e.message : "Something went wrong.");
     }
   }
+  const savedProviderIds = new Set(
+    account?.role === "customer"
+      ? state.savedProviders
+          .filter((saved) => saved.customerId === account.id)
+          .map((saved) => saved.providerId)
+      : [],
+  );
   const providers = ranked(
     filterProviders(state.providers, {
       category,
@@ -117,7 +127,7 @@ export default function Marketplace() {
       city,
       pricing: pricingFilter,
       maxPriceCents,
-    }),
+    }).filter((provider) => !savedOnly || savedProviderIds.has(provider.id)),
     sort,
   );
   const hasDiscoveryFilters =
@@ -125,13 +135,15 @@ export default function Marketplace() {
     Boolean(query.trim()) ||
     Boolean(city.trim()) ||
     pricingFilter !== "all" ||
-    maxPriceCents !== null;
+    maxPriceCents !== null ||
+    savedOnly;
   function clearDiscoveryFilters() {
     setQuery("");
     setCity("");
     setCategory("All services");
     setPricingFilter("all");
     setMaxPriceCents(null);
+    setSavedOnly(false);
   }
   const profile = state.providers.find((p) => p.accountId === account?.id);
   const availableTimes = selected
@@ -221,6 +233,7 @@ export default function Marketplace() {
     attempt(() => {
       enterDemo(String(f.get("name")), String(f.get("email")), authRole);
       setBookingFilter("all");
+      setSavedOnly(false);
       setAuth(false);
       setNotice("Your demo account is ready.");
       if (authRole === "provider") setView("profile");
@@ -394,6 +407,7 @@ export default function Marketplace() {
                     attempt(() => {
                       signOut();
                       setView("discover");
+                      setSavedOnly(false);
                       setNotice("Signed out of the demo account.");
                     })
                   }
@@ -570,6 +584,26 @@ export default function Marketplace() {
                   <option value="fixed">Fixed price only</option>
                 </select>
               </label>
+              <button
+                className={
+                  savedOnly ? "saved-filter selected" : "saved-filter"
+                }
+                aria-pressed={savedOnly}
+                onClick={() => {
+                  if (account?.role === "customer") setSavedOnly(!savedOnly);
+                  else if (!account) {
+                    setAuthRole("customer");
+                    setAuth(true);
+                    setError("");
+                  } else
+                    setNotice(
+                      "Switch to a customer workspace to save providers.",
+                    );
+                }}
+              >
+                <Heart size={15} fill={savedOnly ? "currentColor" : "none"} />
+                Saved ({savedProviderIds.size})
+              </button>
               <label>
                 Maximum listed price
                 <select
@@ -635,6 +669,35 @@ export default function Marketplace() {
                             .join("")}
                         </div>
                         <span className="sample-badge">Sample profile</span>
+                        {account?.role === "customer" && (
+                          <button
+                            className="save-provider"
+                            aria-label={
+                              savedProviderIds.has(p.id)
+                                ? `Remove ${p.name} from saved providers`
+                                : `Save ${p.name}`
+                            }
+                            onClick={() =>
+                              attempt(() => {
+                                const saved = toggleSavedProvider(p.id);
+                                setNotice(
+                                  saved
+                                    ? `${p.name} saved for this customer.`
+                                    : `${p.name} removed from saved providers.`,
+                                );
+                              })
+                            }
+                          >
+                            <Heart
+                              size={18}
+                              fill={
+                                savedProviderIds.has(p.id)
+                                  ? "currentColor"
+                                  : "none"
+                              }
+                            />
+                          </button>
+                        )}
                       </div>
                       <div className="card-body">
                         <div className="name-row">
@@ -1273,6 +1336,7 @@ export default function Marketplace() {
                   attempt(() => {
                     const next = switchDemoAccount(candidate.id);
                     setBookingFilter("all");
+                    setSavedOnly(false);
                     setDemoSwitcher(false);
                     setView("bookings");
                     setNotice(
@@ -1316,6 +1380,36 @@ export default function Marketplace() {
               {selected.city}
             </span>
           </div>
+          {account?.role === "customer" && (
+            <button
+              className="detail-save"
+              aria-label={
+                savedProviderIds.has(selected.id)
+                  ? `Remove ${selected.name} from saved providers`
+                  : `Save ${selected.name}`
+              }
+              onClick={() =>
+                attempt(() => {
+                  const saved = toggleSavedProvider(selected.id);
+                  setNotice(
+                    saved
+                      ? `${selected.name} saved for this customer.`
+                      : `${selected.name} removed from saved providers.`,
+                  );
+                })
+              }
+            >
+              <Heart
+                size={16}
+                fill={
+                  savedProviderIds.has(selected.id) ? "currentColor" : "none"
+                }
+              />
+              {savedProviderIds.has(selected.id)
+                ? "Saved provider"
+                : "Save provider"}
+            </button>
+          )}
           <h3 className="detail-title">{selected.title}</h3>
           <p className="detail-bio">{selected.bio}</p>
           <div className="availability">

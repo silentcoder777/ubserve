@@ -116,6 +116,28 @@ export function switchDemoAccount(accountId: string) {
   publish({ ...s, currentAccountId: account.id });
   return account;
 }
+export function toggleSavedProvider(providerId: string) {
+  const s = getSnapshot(),
+    account = currentAccount();
+  if (!account || account.role !== "customer")
+    throw new Error("Open a customer account to save providers.");
+  if (!s.providers.some((provider) => provider.id === providerId))
+    throw new Error("Provider not found.");
+  const exists = s.savedProviders.some(
+    (saved) =>
+      saved.customerId === account.id && saved.providerId === providerId,
+  );
+  publish({
+    ...s,
+    savedProviders: exists
+      ? s.savedProviders.filter(
+          (saved) =>
+            saved.customerId !== account.id || saved.providerId !== providerId,
+        )
+      : [...s.savedProviders, { customerId: account.id, providerId }],
+  });
+  return !exists;
+}
 export function saveProvider(
   input: Omit<
     Provider,

@@ -179,6 +179,44 @@ test("discovery combines pricing model and maximum price filters", async ({
   ).toBe(true);
 });
 
+test("customer saves providers and filters discovery after reload", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Saved Demo", "saved@example.test");
+  await page.getByRole("button", { name: "Save Maya Thompson" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Maya Thompson saved" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Remove Maya Thompson from saved providers",
+    }),
+  ).toBeVisible();
+
+  await page.reload();
+  await page.getByRole("button", { name: "Saved (1)" }).click();
+  await expect(page.getByRole("article")).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { name: "Maya Thompson" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", {
+      name: "Remove Maya Thompson from saved providers",
+    })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "No providers found" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(page.getByRole("article")).toHaveCount(6);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("dialogs contain keyboard focus, close with Escape, and restore the opener", async ({
   page,
 }) => {

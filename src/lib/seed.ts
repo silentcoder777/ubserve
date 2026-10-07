@@ -107,5 +107,6 @@ export const seed: State = {
   providers: seedProviders,
   bookings: [],
   reviews: [],
+  savedProviders: [],
   currentAccountId: null,
 };

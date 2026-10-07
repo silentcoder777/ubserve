@@ -53,11 +53,16 @@ export type Review = {
   stars: number;
   text: string;
 };
+export type SavedProvider = {
+  customerId: string;
+  providerId: string;
+};
 export type State = {
   accounts: Account[];
   providers: Provider[];
   bookings: Booking[];
   reviews: Review[];
+  savedProviders: SavedProvider[];
   currentAccountId: string | null;
 };
 export const money = (cents: number) =>

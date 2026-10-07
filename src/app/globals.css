@@ -411,6 +411,23 @@ h1 {
 .discovery-filters .text-button {
   margin-left: auto;
 }
+.saved-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ccd7df;
+  border-radius: 7px;
+  background: white;
+  color: var(--muted);
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.saved-filter.selected {
+  border-color: #c24c35;
+  background: #fff0ec;
+  color: #9f361e;
+}
 .section-head {
   display: flex;
   align-items: center;
@@ -479,6 +496,20 @@ h1 {
 }
 .card-art.gold {
   background: #f4edda;
+}
+.save-provider {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ffffffd9;
+  border-radius: 50%;
+  background: #ffffffeb;
+  color: #9f361e;
+  box-shadow: 0 3px 10px #17364c17;
 }
 .service-pill {
   position: absolute;
@@ -797,6 +828,19 @@ legend {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.detail-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 15px;
+  border: 1px solid #e4b4a9;
+  border-radius: 7px;
+  background: #fff7f4;
+  color: #9f361e;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
 }
 .tag {
   background: #edf2f5;
@@ -1399,6 +1443,10 @@ blockquote p {
   .discovery-filters .text-button {
     margin-left: 0;
     align-self: center;
+  }
+  .saved-filter {
+    flex: 1 1 145px;
+    justify-content: center;
   }
   .section-head {
     align-items: flex-start;

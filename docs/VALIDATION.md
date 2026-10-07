@@ -111,3 +111,12 @@ The native dialog implementation applies to signup, booking, checkout and review
 - The detail dialog exposes an accessible star label, review text and reviewer name, while distinguishing newly submitted feedback from fictional seed ratings.
 - Browser coverage publishes feedback, reloads the production build, reopens it as the customer, then switches to the provider workspace and verifies the same review on desktop and mobile.
 - Production still requires server-authorized completed-booking checks, a database uniqueness constraint, moderation and an edit/removal policy.
+
+## Customer saved providers — October 6, 2026
+
+- Customer accounts can add or remove provider profiles from a customer-scoped shortlist on discovery cards and provider details.
+- The **Saved** discovery control shows the current customer's count and combines with service, city and price constraints.
+- Saved relationships persist across reloads and synchronize with the existing same-profile marketplace state; switching identities resets the presentation-only saved filter.
+- Runtime validation migrates older snapshots to an empty shortlist and rejects missing, provider-owned or duplicate saved relationships.
+- Browser coverage saves Maya, reloads, filters to the one saved provider, removes her, clears the resulting empty filter and checks mobile/desktop width.
+- Production requires authenticated customer ownership, a unique `(customer_id, provider_id)` constraint and server-side paginated discovery queries.

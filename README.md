@@ -9,6 +9,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Create or reopen customer/provider demo accounts with a name and fictional email.
 - Publish/edit a provider profile, category, price, and weekly availability.
 - Discover providers through service search, category/city filters, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
+- Save providers to a customer-specific shortlist and filter discovery to saved profiles.
 - Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
@@ -61,7 +62,7 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 6. Switch back to the customer workspace, view bookings, and leave a review.
 7. To show onboarding, create another provider account and publish a new profile.
 
-**Reset demo data** clears all locally saved accounts, profiles, bookings, and reviews. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
+**Reset demo data** clears all locally saved accounts, profiles, bookings, reviews, and provider shortlists. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
 
 ## Structure
 

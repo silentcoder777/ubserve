@@ -53,12 +53,18 @@ const review = z.object({
   text: z.string().min(1),
 });
 
+const savedProvider = z.object({
+  customerId: z.string().min(1),
+  providerId: z.string().min(1),
+});
+
 const storedState = z
   .object({
     accounts: z.array(account),
     providers: z.array(provider),
     bookings: z.array(booking),
     reviews: z.array(review),
+    savedProviders: z.array(savedProvider).default([]),
     currentAccountId: z.string().nullable(),
   })
   .superRefine((state, context) => {
@@ -100,6 +106,22 @@ const storedState = z
           message: "Review references do not match a booking.",
           path: ["reviews", index],
         });
+    });
+    const savedPairs = new Set<string>();
+    state.savedProviders.forEach((item, index) => {
+      const pair = `${item.customerId}:${item.providerId}`;
+      if (
+        accounts.get(item.customerId)?.role !== "customer" ||
+        !providers.has(item.providerId) ||
+        savedPairs.has(pair)
+      )
+        context.addIssue({
+          code: "custom",
+          message:
+            "Saved provider references are missing, invalid or duplicated.",
+          path: ["savedProviders", index],
+        });
+      savedPairs.add(pair);
     });
   });
 
