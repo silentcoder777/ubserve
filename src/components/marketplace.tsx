@@ -66,7 +66,11 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
     </label>
   );
 }
-const progressStatuses = ["requested", "accepted", "completed"] as const;
+const progressStatuses = [
+  { status: "requested", label: "Requested" },
+  { status: "accepted", label: "Accepted" },
+  { status: "completed", label: "Completed" },
+] as const;
 function BookingProgress({ status }: { status: Booking["status"] }) {
   if (status === "cancelled")
     return (
@@ -80,7 +84,7 @@ function BookingProgress({ status }: { status: Booking["status"] }) {
         </li>
       </ol>
     );
-  const current = progressStatuses.indexOf(status);
+  const current = progressStatuses.findIndex((step) => step.status === status);
   return (
     <ol className="booking-progress" aria-label="Booking progress">
       {progressStatuses.map((step, index) => {
@@ -89,12 +93,12 @@ function BookingProgress({ status }: { status: Booking["status"] }) {
           <li
             className={state}
             aria-current={state === "current" ? "step" : undefined}
-            key={step}
+            key={step.status}
           >
             <span className="progress-marker" aria-hidden="true">
               {state === "done" && <Check size={11} strokeWidth={3} />}
             </span>
-            <small>{step}</small>
+            <small>{step.label}</small>
           </li>
         );
       })}
