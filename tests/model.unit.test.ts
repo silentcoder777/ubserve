@@ -199,7 +199,7 @@ it("summarizes lifecycle, mock-payment and non-cancelled booking value", () => {
       ...booking,
       id: "cancelled",
       status: "cancelled",
-      payment: "mock-paid",
+      payment: "mock-refunded",
       totalCents: 12000,
     },
   ]);

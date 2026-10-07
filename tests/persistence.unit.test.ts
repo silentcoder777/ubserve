@@ -12,6 +12,37 @@ describe("browser persistence validation", () => {
     expect(parseStoredState(JSON.stringify(legacy))).toEqual(seed);
   });
 
+  it("accepts a cancelled booking with a retained mock refund reference", () => {
+    const customer = {
+      id: "customer-1",
+      name: "Alex Demo",
+      email: "alex@example.test",
+      role: "customer" as const,
+    };
+    const refunded = {
+      ...seed,
+      accounts: [...seed.accounts, customer],
+      bookings: [
+        {
+          id: "booking-1",
+          customerId: customer.id,
+          providerId: seed.providers[0].id,
+          providerName: seed.providers[0].name,
+          service: seed.providers[0].category,
+          startsAt: "2030-01-07T16:00:00.000Z",
+          hours: 2,
+          totalCents: 7000,
+          address: "123 Main Street",
+          notes: "",
+          status: "cancelled" as const,
+          payment: "mock-refunded" as const,
+          paymentReference: "mock_pay_demo",
+        },
+      ],
+    };
+    expect(parseStoredState(JSON.stringify(refunded))).toEqual(refunded);
+  });
+
   it.each([null, "", "not-json", JSON.stringify({ accounts: [] })])(
     "rejects missing or malformed snapshots",
     (raw) => expect(parseStoredState(raw)).toBeNull(),

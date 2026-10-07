@@ -226,7 +226,18 @@ export function updateBooking(id: string, status: Booking["status"]) {
   if (!allowed) throw new Error("This booking cannot be changed.");
   publish({
     ...s,
-    bookings: s.bookings.map((x) => (x.id === id ? { ...x, status } : x)),
+    bookings: s.bookings.map((x) =>
+      x.id === id
+        ? {
+            ...x,
+            status,
+            payment:
+              status === "cancelled" && x.payment === "mock-paid"
+                ? "mock-refunded"
+                : x.payment,
+          }
+        : x,
+    ),
   });
 }
 export function rescheduleBooking(

@@ -39,7 +39,7 @@ const booking = z.object({
   address: z.string(),
   notes: z.string(),
   status: z.enum(["requested", "accepted", "completed", "cancelled"]),
-  payment: z.enum(["unpaid", "mock-paid"]),
+  payment: z.enum(["unpaid", "mock-paid", "mock-refunded"]),
   paymentReference: z.string().nullable().optional(),
 });
 

@@ -104,6 +104,13 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Browser coverage completes checkout, validates the receipt, reloads the production build, and reopens the same browser-local receipt on desktop and mobile.
 - The receipt is presentation evidence for the simulation only. It is not a Stripe receipt, settlement record or proof of payment, and no card data is collected.
 
+## Simulated cancellation refunds — October 7, 2026
+
+- Cancelling or declining a booking with a successful test payment changes its payment state from `mock-paid` to `mock-refunded` while retaining the mock identifier for demo traceability.
+- Booking cards and saved test receipts label the simulated refund explicitly and state that no real charge, refund, Stripe settlement, or money movement occurred.
+- Cancelled bookings remain excluded from paid-count and booked-value summary metrics. Browser coverage pays for a request, confirms its cancellation, and verifies the refund label and receipt on desktop and mobile.
+- This is a UI/state simulation, not a refund API. Production requires trusted server-side amounts, an authenticated Stripe refund call, idempotency, webhook reconciliation, audit records, and policy handling.
+
 ## Role-aware saved reviews — October 6, 2026
 
 - After a customer submits the single allowed review for a completed booking, the dashboard replaces the submission action with a persistent review-detail action.

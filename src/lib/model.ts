@@ -41,7 +41,7 @@ export type Booking = {
   address: string;
   notes: string;
   status: "requested" | "accepted" | "completed" | "cancelled";
-  payment: "unpaid" | "mock-paid";
+  payment: "unpaid" | "mock-paid" | "mock-refunded";
   paymentReference?: string | null;
 };
 export type Review = {

@@ -407,10 +407,17 @@ test("booking dashboard filters appointments by lifecycle status", async ({
       .click();
     await page.getByLabel("Service address").fill("123 Main Street, Ames, IA");
     await page.getByRole("button", { name: "Request booking" }).click();
-    await page
-      .getByRole("dialog", { name: "Test checkout" })
-      .getByRole("button", { name: "Close dialog" })
-      .click();
+    const checkout = page.getByRole("dialog", { name: "Test checkout" });
+    if (provider === "Maya Thompson") {
+      await checkout
+        .getByRole("button", { name: /Simulate payment/ })
+        .click();
+      await expect(
+        page.getByRole("status").filter({ hasText: "Test payment succeeded" }),
+      ).toBeVisible();
+    } else {
+      await checkout.getByRole("button", { name: "Close dialog" }).click();
+    }
     if (provider === "Maya Thompson")
       await page.getByRole("button", { name: "Ubserve home" }).click();
   }
@@ -424,6 +431,7 @@ test("booking dashboard filters appointments by lifecycle status", async ({
     name: "Cancel this booking?",
   });
   await expect(cancellation).toContainText("Cleaning with Maya Thompson");
+  await expect(cancellation).toContainText("simulated refund");
   await cancellation.getByRole("button", { name: "Keep booking" }).click();
   await expect(
     page.getByRole("button", { name: "Requested 2" }),
@@ -438,7 +446,7 @@ test("booking dashboard filters appointments by lifecycle status", async ({
     .getByRole("button", { name: "Cancel booking" })
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "Booking cancelled" }),
+    page.getByRole("status").filter({ hasText: "test refund was recorded" }),
   ).toBeVisible();
   await expect(page.getByRole("button", { name: "All 2" })).toBeVisible();
   await expect(
@@ -457,6 +465,13 @@ test("booking dashboard filters appointments by lifecycle status", async ({
   await expect(
     page.getByRole("heading", { name: "Maya Thompson" }),
   ).toBeVisible();
+  await expect(page.getByText("Test refund recorded")).toBeVisible();
+  await page.getByRole("button", { name: "View test receipt" }).click();
+  const receipt = page.getByRole("dialog", { name: "Test payment receipt" });
+  await expect(receipt).toContainText("Simulated refund recorded");
+  await expect(receipt).toContainText("Refunded (simulated)");
+  await expect(receipt).toContainText("No real charge or refund occurred");
+  await receipt.getByRole("button", { name: "Done" }).click();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
