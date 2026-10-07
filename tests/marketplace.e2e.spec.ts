@@ -51,6 +51,14 @@ test("customer books, tests decline/success, provider completes, customer review
   await expect(
     page.getByText("Test payment complete", { exact: true }),
   ).toBeVisible();
+  const customerCard = page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) });
+  await expect(
+    customerCard
+      .getByRole("list", { name: "Booking progress" })
+      .locator('[aria-current="step"]'),
+  ).toHaveText("Requested");
   await expect(
     page.getByText("$35/hour × 2 hours", { exact: true }),
   ).toBeVisible();
@@ -71,8 +79,21 @@ test("customer books, tests decline/success, provider completes, customer review
   await page.getByRole("button", { name: "Sign out" }).click();
   await account(page, "Maya Thompson", "p1@example.test", true);
   await bookings(page);
+  const providerCard = page
+    .getByRole("article")
+    .filter({ has: page.getByRole("heading", { name: "Alex Demo" }) });
   await page.getByRole("button", { name: "Accept request" }).click();
+  await expect(
+    providerCard
+      .getByRole("list", { name: "Booking progress" })
+      .locator('[aria-current="step"]'),
+  ).toHaveText("Accepted");
   await page.getByRole("button", { name: "Mark complete" }).click();
+  await expect(
+    providerCard
+      .getByRole("list", { name: "Booking progress" })
+      .locator('[aria-current="step"]'),
+  ).toHaveText("Completed");
   await page.getByRole("button", { name: "Sign out" }).click();
   await account(page, "Alex Demo", "alex@example.test");
   await bookings(page);
@@ -470,6 +491,11 @@ test("booking dashboard filters appointments by lifecycle status", async ({
     page.getByRole("heading", { name: "Maya Thompson" }),
   ).toBeVisible();
   await expect(page.getByText("Test refund recorded")).toBeVisible();
+  await expect(
+    page
+      .getByRole("list", { name: "Booking progress" })
+      .locator('[aria-current="step"]'),
+  ).toHaveText("Cancelled · time released");
   await page.getByRole("button", { name: "View test receipt" }).click();
   const receipt = page.getByRole("dialog", { name: "Test payment receipt" });
   await expect(receipt).toContainText("Simulated refund recorded");

@@ -66,6 +66,41 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
     </label>
   );
 }
+const progressStatuses = ["requested", "accepted", "completed"] as const;
+function BookingProgress({ status }: { status: Booking["status"] }) {
+  if (status === "cancelled")
+    return (
+      <ol
+        className="booking-progress booking-cancelled"
+        aria-label="Booking progress"
+      >
+        <li className="current" aria-current="step">
+          <span className="progress-marker" aria-hidden="true" />
+          <small>Cancelled · time released</small>
+        </li>
+      </ol>
+    );
+  const current = progressStatuses.indexOf(status);
+  return (
+    <ol className="booking-progress" aria-label="Booking progress">
+      {progressStatuses.map((step, index) => {
+        const state = index < current ? "done" : index === current ? "current" : "upcoming";
+        return (
+          <li
+            className={state}
+            aria-current={state === "current" ? "step" : undefined}
+            key={step}
+          >
+            <span className="progress-marker" aria-hidden="true">
+              {state === "done" && <Check size={11} strokeWidth={3} />}
+            </span>
+            <small>{step}</small>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 function tomorrow() {
   const d = new Date();
   d.setDate(d.getDate() + 1);
@@ -1104,6 +1139,7 @@ export default function Marketplace() {
                         {b.address}
                       </span>
                     </div>
+                    <BookingProgress status={b.status} />
                     {b.notes && <p className="booking-notes">{b.notes}</p>}
                     <div className="booking-bottom">
                       <div>

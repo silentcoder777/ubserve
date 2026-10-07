@@ -119,6 +119,13 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Domain and persistence coverage verifies hourly, fixed and legacy labels plus incomplete/inconsistent snapshot rejection. Browser coverage checks the breakdown on a booking card and receipt at desktop and mobile sizes.
 - Production should persist currency and quote/version identifiers and calculate trusted totals transactionally on the server; browser validation is not an authorization or accounting boundary.
 
+## Booking progress indicators — October 7, 2026
+
+- Every active booking card renders the same Requested → Accepted → Completed sequence for customer and provider workspaces; the current step uses `aria-current="step"` instead of relying on color alone.
+- Completed steps receive a visual check mark. Cancelled bookings use a separate `Cancelled · time released` state so the interface does not imply whether cancellation occurred before or after acceptance.
+- Browser coverage verifies requested, accepted, completed and cancelled progress states across the existing desktop and mobile lifecycle journeys.
+- This is a presentation of current state, not an audit history. Production should persist immutable transition events with actor, timestamp and reason when a full timeline is required.
+
 ## Role-aware saved reviews — October 6, 2026
 
 - After a customer submits the single allowed review for a completed booking, the dashboard replaces the submission action with a persistent review-detail action.

@@ -12,7 +12,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Customer rescheduling for requested bookings with availability revalidation, refreshed price snapshots, and explicit mock-payment reset.
 - Completed-service rebooking that pre-fills prior visit details while using current pricing and fresh availability.
 - Provider acceptance/completion, cancellation, one review per completed booking, and role-aware saved-review detail.
-- Customer/provider booking dashboards with lifecycle counts and status filters.
+- Customer/provider booking dashboards with lifecycle counts, status filters and accessible per-booking progress indicators.
 - Guarded cancellation/decline actions with appointment context and visible lifecycle feedback.
 - Role-scoped customer/provider summary metrics derived from current bookings and non-cancelled demo value.
 - Stripe-style mock checkout API with success/decline scenarios, persistent browser-local test receipts, and a simulated refund state when a paid test booking is cancelled; no Stripe SDK or money movement.
