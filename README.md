@@ -10,7 +10,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Publish/edit a provider profile, category, price, and weekly availability.
 - Discover providers through service search, category/city filters, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
 - Save providers to a customer-specific shortlist and filter discovery to saved profiles.
-- Request or reschedule an appointment with a duration, service address, current cost estimate, and only currently available start times.
+- Request or reschedule an appointment with a duration, service address, current cost estimate, only currently available start times, and a saved hourly/fixed quote breakdown.
 - Rebook a completed service with the previous visit details prefilled and a fresh availability/price check.
 - Check availability and reject overlapping reservations in the current browser.
 - Accept, decline, cancel, and complete bookings through role-specific dashboards.
@@ -72,7 +72,7 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 src/app/                     App Router layout, page, and styles
 src/app/api/mock-checkout/    Mock payment HTTP endpoint
 src/components/              Marketplace screens and forms
-src/lib/model.ts             Types, pricing, availability, ranking
+src/lib/model.ts             Types, pricing, quote display, availability, ranking
 src/lib/persistence.ts       Runtime schema and relationship validation
 src/lib/seed.ts               Clearly labeled fictional providers
 src/lib/store.ts              Browser-local state and demo commands

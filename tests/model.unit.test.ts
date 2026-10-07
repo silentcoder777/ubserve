@@ -3,6 +3,7 @@ import {
   quote,
   assertSlot,
   availableStartTimes,
+  bookingQuoteLabel,
   filterProviders,
   summarizeBookings,
   ranked,
@@ -36,6 +37,23 @@ describe("pricing", () => {
   );
   it("rejects invalid price", () =>
     expect(() => quote({ ...p, priceCents: -100 }, 2)).toThrow());
+  it("explains hourly, fixed and legacy booking totals", () => {
+    expect(
+      bookingQuoteLabel({
+        hours: 2,
+        pricingSnapshot: "hourly",
+        unitPriceCents: 3500,
+      }),
+    ).toBe("$35/hour × 2 hours");
+    expect(
+      bookingQuoteLabel({
+        hours: 3,
+        pricingSnapshot: "fixed",
+        unitPriceCents: 8500,
+      }),
+    ).toBe("$85 fixed price");
+    expect(bookingQuoteLabel({ hours: 2 })).toBe("Saved booking total");
+  });
 });
 describe("availability", () => {
   it("blocks overlaps", () =>

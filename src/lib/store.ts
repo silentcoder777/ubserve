@@ -198,6 +198,8 @@ export function requestBooking(
     startsAt: new Date(startsAt).toISOString(),
     hours,
     totalCents: quote(p, hours),
+    pricingSnapshot: p.pricing,
+    unitPriceCents: p.priceCents,
     address: address.trim(),
     notes: notes.trim(),
     status: "requested",
@@ -264,6 +266,8 @@ export function rescheduleBooking(
     startsAt: new Date(startsAt).toISOString(),
     hours,
     totalCents: quote(provider, hours),
+    pricingSnapshot: provider.pricing,
+    unitPriceCents: provider.priceCents,
     payment: "unpaid",
     paymentReference: null,
   };

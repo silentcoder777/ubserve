@@ -1102,10 +1102,15 @@ fieldset {
 .booking-bottom strong {
   font-size: 22px;
 }
+.price-breakdown,
 .payment-label {
   display: block;
   font-size: 11px;
   color: var(--muted);
+}
+.price-breakdown {
+  margin-top: 2px;
+  color: var(--ink);
 }
 .receipt-link {
   display: block;

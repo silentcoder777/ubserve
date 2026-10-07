@@ -25,6 +25,7 @@ import {
   categories,
   money,
   quote,
+  bookingQuoteLabel,
   availableStartTimes,
   filterProviders,
   summarizeBookings,
@@ -1107,6 +1108,9 @@ export default function Marketplace() {
                     <div className="booking-bottom">
                       <div>
                         <strong>{money(b.totalCents)}</strong>
+                        <span className="price-breakdown">
+                          {bookingQuoteLabel(b)}
+                        </span>
                         <span className="payment-label">
                           {b.payment === "mock-paid"
                             ? "Test payment complete"
@@ -1892,6 +1896,10 @@ export default function Marketplace() {
             <div>
               <dt>Demo amount</dt>
               <dd>{money(receipt.totalCents)}</dd>
+            </div>
+            <div>
+              <dt>Price calculation</dt>
+              <dd>{bookingQuoteLabel(receipt)}</dd>
             </div>
             <div>
               <dt>Payment status</dt>

@@ -36,6 +36,8 @@ const booking = z.object({
   startsAt: z.string().min(1),
   hours: z.number().positive(),
   totalCents: z.number().int().positive(),
+  pricingSnapshot: z.enum(["hourly", "fixed"]).optional(),
+  unitPriceCents: z.number().int().positive().max(1_000_000).optional(),
   address: z.string(),
   notes: z.string(),
   status: z.enum(["requested", "accepted", "completed", "cancelled"]),
@@ -93,6 +95,26 @@ const storedState = z
           message: "Booking provider is missing.",
           path: ["bookings", index, "providerId"],
         });
+      const hasPricing = item.pricingSnapshot !== undefined;
+      const hasUnitPrice = item.unitPriceCents !== undefined;
+      if (hasPricing !== hasUnitPrice)
+        context.addIssue({
+          code: "custom",
+          message: "Booking quote snapshot is incomplete.",
+          path: ["bookings", index, "pricingSnapshot"],
+        });
+      if (hasPricing && hasUnitPrice) {
+        const expectedTotal =
+          item.pricingSnapshot === "hourly"
+            ? Math.round(item.unitPriceCents! * item.hours)
+            : item.unitPriceCents!;
+        if (expectedTotal !== item.totalCents)
+          context.addIssue({
+            code: "custom",
+            message: "Booking quote snapshot does not match its total.",
+            path: ["bookings", index, "totalCents"],
+          });
+      }
     });
     state.reviews.forEach((item, index) => {
       const relatedBooking = bookings.get(item.bookingId);

@@ -38,6 +38,8 @@ export type Booking = {
   startsAt: string;
   hours: number;
   totalCents: number;
+  pricingSnapshot?: Provider["pricing"];
+  unitPriceCents?: number;
   address: string;
   notes: string;
   status: "requested" | "accepted" | "completed" | "cancelled";
@@ -71,6 +73,20 @@ export const money = (cents: number) =>
     currency: "USD",
     maximumFractionDigits: cents % 100 ? 2 : 0,
   }).format(cents / 100);
+export function bookingQuoteLabel(
+  booking: Pick<
+    Booking,
+    "hours" | "pricingSnapshot" | "unitPriceCents"
+  >,
+) {
+  if (!booking.pricingSnapshot || booking.unitPriceCents === undefined)
+    return "Saved booking total";
+  if (booking.pricingSnapshot === "fixed")
+    return `${money(booking.unitPriceCents)} fixed price`;
+  return `${money(booking.unitPriceCents)}/hour × ${booking.hours} ${
+    booking.hours === 1 ? "hour" : "hours"
+  }`;
+}
 export function quote(
   provider: Pick<Provider, "priceCents" | "pricing">,
   hours: number,

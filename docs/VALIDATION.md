@@ -111,6 +111,14 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Cancelled bookings remain excluded from paid-count and booked-value summary metrics. Browser coverage pays for a request, confirms its cancellation, and verifies the refund label and receipt on desktop and mobile.
 - This is a UI/state simulation, not a refund API. Production requires trusted server-side amounts, an authenticated Stripe refund call, idempotency, webhook reconciliation, audit records, and policy handling.
 
+## Explainable booking quote snapshots — October 7, 2026
+
+- New bookings store the provider's pricing model and unit price alongside the agreed total, so later profile edits cannot change the saved quote calculation.
+- Booking cards and test receipts show hourly rate × duration or the saved fixed price. Older browser snapshots without these optional fields remain usable and display `Saved booking total` instead of inventing historical data.
+- Runtime validation rejects partial snapshots and totals that do not match the saved unit price, pricing model and duration.
+- Domain and persistence coverage verifies hourly, fixed and legacy labels plus incomplete/inconsistent snapshot rejection. Browser coverage checks the breakdown on a booking card and receipt at desktop and mobile sizes.
+- Production should persist currency and quote/version identifiers and calculate trusted totals transactionally on the server; browser validation is not an authorization or accounting boundary.
+
 ## Role-aware saved reviews — October 6, 2026
 
 - After a customer submits the single allowed review for a completed booking, the dashboard replaces the submission action with a persistent review-detail action.
