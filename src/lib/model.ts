@@ -171,6 +171,7 @@ export type ProviderFilters = {
   city: string;
   pricing: "all" | Provider["pricing"];
   maxPriceCents: number | null;
+  availabilityDay: number | null;
 };
 export function filterProviders(
   providers: Provider[],
@@ -189,7 +190,9 @@ export function filterProviders(
       (!city || provider.city.toLowerCase().includes(city)) &&
       (filters.pricing === "all" || provider.pricing === filters.pricing) &&
       (filters.maxPriceCents === null ||
-        provider.priceCents <= filters.maxPriceCents),
+        provider.priceCents <= filters.maxPriceCents) &&
+      (filters.availabilityDay === null ||
+        provider.days.includes(filters.availabilityDay)),
   );
 }
 export function summarizeBookings(bookings: Booking[]) {

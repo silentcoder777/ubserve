@@ -71,6 +71,15 @@ const progressStatuses = [
   { status: "accepted", label: "Accepted" },
   { status: "completed", label: "Completed" },
 ] as const;
+const availabilityDays = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
 function BookingProgress({ status }: { status: Booking["status"] }) {
   if (status === "cancelled")
     return (
@@ -123,6 +132,7 @@ export default function Marketplace() {
       "all" | Provider["pricing"]
     >("all"),
     [maxPriceCents, setMaxPriceCents] = useState<number | null>(null),
+    [availabilityDay, setAvailabilityDay] = useState<number | null>(null),
     [sort, setSort] = useState("recommended"),
     [savedOnly, setSavedOnly] = useState(false);
   const [auth, setAuth] = useState(false),
@@ -169,6 +179,7 @@ export default function Marketplace() {
       city,
       pricing: pricingFilter,
       maxPriceCents,
+      availabilityDay,
     }).filter((provider) => !savedOnly || savedProviderIds.has(provider.id)),
     sort,
   );
@@ -178,6 +189,7 @@ export default function Marketplace() {
     Boolean(city.trim()) ||
     pricingFilter !== "all" ||
     maxPriceCents !== null ||
+    availabilityDay !== null ||
     savedOnly;
   function clearDiscoveryFilters() {
     setQuery("");
@@ -185,6 +197,7 @@ export default function Marketplace() {
     setCategory("All services");
     setPricingFilter("all");
     setMaxPriceCents(null);
+    setAvailabilityDay(null);
     setSavedOnly(false);
   }
   function openProvider(
@@ -636,9 +649,9 @@ export default function Marketplace() {
             <div
               className="discovery-filters"
               role="group"
-              aria-label="Price filters"
+              aria-label="Discovery filters"
             >
-              <span>Refine by price</span>
+              <span>Refine results</span>
               <label>
                 Pricing model
                 <select
@@ -653,6 +666,27 @@ export default function Marketplace() {
                   <option value="all">Hourly or fixed</option>
                   <option value="hourly">Hourly only</option>
                   <option value="fixed">Fixed price only</option>
+                </select>
+              </label>
+              <label>
+                Available day
+                <select
+                  aria-label="Available day"
+                  value={availabilityDay ?? "any"}
+                  onChange={(event) =>
+                    setAvailabilityDay(
+                      event.target.value === "any"
+                        ? null
+                        : Number(event.target.value),
+                    )
+                  }
+                >
+                  <option value="any">Any day</option>
+                  {availabilityDays.map((day, index) => (
+                    <option value={index} key={day}>
+                      {day}
+                    </option>
+                  ))}
                 </select>
               </label>
               <button

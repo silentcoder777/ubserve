@@ -81,6 +81,13 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Unit coverage verifies combined constraints and description matching. Browser coverage narrows fixed-price providers by a $75 maximum, resets every discovery constraint together, and checks horizontal document fit on desktop and mobile.
 - Listed-price filtering compares the provider's advertised amount; it does not estimate parts, ingredients, taxes, platform fees or total hourly job duration.
 
+## Availability-aware provider discovery — October 7, 2026
+
+- Customers can select a weekday and keep only providers whose published weekly schedule includes that day. The constraint composes with service, city, saved-provider and pricing filters through the same pure discovery function.
+- Reset filters returns the weekday selector to **Any day** along with every other discovery constraint.
+- Unit coverage verifies weekday matching. Browser coverage publishes a Monday–Friday provider, confirms Sunday produces an empty result, confirms Monday restores the profile, and runs the same flow at desktop and mobile viewport sizes.
+- The filter represents a provider's recurring working day, not a guaranteed appointment. The booking form still checks duration, working hours, existing reservations and whether the selected time is in the future before submission.
+
 ## Role-scoped booking summaries — October 6, 2026
 
 - Customer summaries show active bookings, completed services, non-cancelled mock-paid count and non-cancelled booked value. Provider summaries show new requests, accepted visits, completed jobs and pipeline value.

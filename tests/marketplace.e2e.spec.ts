@@ -160,6 +160,14 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
   await expect(
     page.getByRole("heading", { name: "Taylor Demo" }),
   ).toBeVisible();
+  await page.getByLabel("Available day").selectOption({ label: "Sunday" });
+  await expect(
+    page.getByRole("heading", { name: "No providers found" }),
+  ).toBeVisible();
+  await page.getByLabel("Available day").selectOption({ label: "Monday" });
+  await expect(
+    page.getByRole("heading", { name: "Taylor Demo" }),
+  ).toBeVisible();
   await expect(page.getByText("$99", { exact: true })).toBeVisible();
   await page.reload();
   await page.getByLabel("Search services or providers").fill("Taylor");
@@ -211,6 +219,7 @@ test("discovery combines pricing model and maximum price filters", async ({
   ).toBeVisible();
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByRole("article")).toHaveCount(6);
+  await expect(page.getByLabel("Available day")).toHaveValue("any");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

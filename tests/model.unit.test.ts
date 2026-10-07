@@ -176,6 +176,7 @@ describe("provider discovery filters", () => {
       city: "ames",
       pricing: "hourly",
       maxPriceCents: 3200,
+      availabilityDay: null,
     });
     expect(providers.map((provider) => provider.name)).toEqual([
       "Elena Rodriguez",
@@ -189,10 +190,29 @@ describe("provider discovery filters", () => {
       city: " ",
       pricing: "all",
       maxPriceCents: null,
+      availabilityDay: null,
     });
     expect(providers.map((provider) => provider.name)).toEqual([
       "Jordan Brooks",
     ]);
+  });
+
+  it("filters providers by a selected available weekday", () => {
+    const providers = filterProviders(
+      [
+        { ...seedProviders[0], days: [1, 2, 3, 4, 5] },
+        { ...seedProviders[1], days: [0, 6] },
+      ],
+      {
+        category: "All services",
+        query: "",
+        city: "",
+        pricing: "all",
+        maxPriceCents: null,
+        availabilityDay: 0,
+      },
+    );
+    expect(providers.map((provider) => provider.name)).toEqual(["Arjun Patel"]);
   });
 });
 

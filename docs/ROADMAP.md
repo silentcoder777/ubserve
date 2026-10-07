@@ -6,7 +6,7 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 
 - Customer/provider demo identity creation and reopening by email (not secure authentication).
 - Provider profile publishing/editing, hourly/fixed pricing, weekly availability.
-- Search by name/service description, category, city, pricing model and maximum listed price, with confidence-weighted rating sorting.
+- Search by name/service description, category, city, available weekday, pricing model and maximum listed price, with confidence-weighted rating sorting.
 - Customer-scoped saved-provider shortlists with a discovery filter and browser-local persistence.
 - Customer booking with date/duration-aware available start times, estimates, local overlap checks, and customer/provider dashboards.
 - Customer rescheduling for requested bookings with availability revalidation, refreshed price snapshots, and explicit mock-payment reset.

@@ -8,7 +8,7 @@ A responsive US local-services marketplace where customers choose providers by s
 
 - Create or reopen customer/provider demo accounts with a name and fictional email.
 - Publish/edit a provider profile, category, price, and weekly availability.
-- Discover providers through service search, category/city filters, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
+- Discover providers through service search, category/city filters, available weekday, hourly/fixed pricing, maximum listed price, and recommended or price ordering.
 - Save providers to a customer-specific shortlist and filter discovery to saved profiles.
 - Request or reschedule an appointment with a duration, service address, current cost estimate, only currently available start times, and a saved hourly/fixed quote breakdown.
 - Rebook a completed service with the previous visit details prefilled and a fresh availability/price check.
