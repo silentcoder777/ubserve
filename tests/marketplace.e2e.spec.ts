@@ -48,6 +48,10 @@ test("customer books, tests decline/success, provider completes, customer review
     "declined",
   );
   let successfulPaymentRequests = 0;
+  let releaseSuccessfulPayment!: () => void;
+  const successfulPaymentResponse = new Promise<void>((resolve) => {
+    releaseSuccessfulPayment = resolve;
+  });
   await page.route("**/api/mock-checkout", async (route) => {
     const request = route.request().postDataJSON() as {
       scenario?: string;
@@ -55,7 +59,7 @@ test("customer books, tests decline/success, provider completes, customer review
     };
     if (request.scenario !== "success") return route.continue();
     successfulPaymentRequests += 1;
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await successfulPaymentResponse;
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -76,10 +80,12 @@ test("customer books, tests decline/success, provider completes, customer review
     submit.click();
     submit.click();
   });
+  await expect(paymentButton).toBeDisabled();
   await page.getByRole("button", { name: "Close dialog" }).click();
   await expect(
     page.getByRole("dialog", { name: "Test checkout" }),
   ).toBeVisible();
+  releaseSuccessfulPayment();
   await expect(
     page.getByText("Test payment complete", { exact: true }),
   ).toBeVisible();
