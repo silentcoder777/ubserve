@@ -88,6 +88,13 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Unit coverage verifies weekday matching. Browser coverage publishes a Monday–Friday provider, confirms Sunday produces an empty result, confirms Monday restores the profile, and runs the same flow at desktop and mobile viewport sizes.
 - The filter represents a provider's recurring working day, not a guaranteed appointment. The booking form still checks duration, working hours, existing reservations and whether the selected time is in the future before submission.
 
+## Provider schedule summaries — October 8, 2026
+
+- Discovery cards and booking details use one pure formatter to present weekly availability as **Every day**, **Weekdays**, **Weekends**, or an ordered abbreviated day list with a 12-hour local-time range.
+- Duplicate or unsorted weekday values are normalized for display without changing the provider record. Booking validation continues to use the underlying numeric schedule rather than parsing presentation text.
+- Unit coverage verifies daily, weekday and custom schedule labels, including noon and midnight boundaries. Browser coverage verifies that a newly published Monday–Friday provider exposes the same schedule on desktop and mobile discovery cards.
+- These labels summarize recurring provider hours only; they do not promise that every displayed day or hour remains unreserved.
+
 ## Role-scoped booking summaries — October 6, 2026
 
 - Customer summaries show active bookings, completed services, non-cancelled mock-paid count and non-cancelled booked value. Provider summaries show new requests, accepted visits, completed jobs and pipeline value.

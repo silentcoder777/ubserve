@@ -73,6 +73,33 @@ export const money = (cents: number) =>
     currency: "USD",
     maximumFractionDigits: cents % 100 ? 2 : 0,
   }).format(cents / 100);
+const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+function hourLabel(hour: number) {
+  const normalized = hour % 24;
+  const display = normalized % 12 || 12;
+  return display + " " + (normalized < 12 ? "AM" : "PM");
+}
+export function availabilityLabel(
+  provider: Pick<Provider, "days" | "startHour" | "endHour">,
+) {
+  const days = [...new Set(provider.days)].sort((a, b) => a - b);
+  const dayLabel =
+    days.length === 7 && days.every((day, index) => day === index)
+      ? "Every day"
+      : days.length === 5 && days.every((day, index) => day === index + 1)
+        ? "Weekdays"
+        : days.length === 2 && days[0] === 0 && days[1] === 6
+          ? "Weekends"
+          : days.map((day) => weekdayNames[day]).filter(Boolean).join(", ");
+  return (
+    dayLabel +
+    " · " +
+    hourLabel(provider.startHour) +
+    "–" +
+    hourLabel(provider.endHour) +
+    " local"
+  );
+}
 export function bookingQuoteLabel(
   booking: Pick<
     Booking,

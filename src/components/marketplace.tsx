@@ -25,6 +25,7 @@ import {
   categories,
   money,
   quote,
+  availabilityLabel,
   bookingQuoteLabel,
   availableStartTimes,
   filterProviders,
@@ -828,6 +829,10 @@ export default function Marketplace() {
                           <span>·</span>
                           {p.experience}
                         </div>
+                        <div className="provider-availability">
+                          <Clock3 size={14} />
+                          {availabilityLabel(p)}
+                        </div>
                         <div className="card-bottom">
                           <div>
                             <strong>{money(p.priceCents)}</strong>
@@ -1541,10 +1546,7 @@ export default function Marketplace() {
           <p className="detail-bio">{selected.bio}</p>
           <div className="availability">
             <Clock3 size={17} />
-            {selected.days
-              .map((d) => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d])
-              .join(", ")}{" "}
-            · {selected.startHour}:00–{selected.endHour}:00 local time
+            {availabilityLabel(selected)}
           </div>
           {state.reviews
             .filter((r) => r.providerId === selected.id)

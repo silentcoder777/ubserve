@@ -3,6 +3,7 @@ import {
   quote,
   assertSlot,
   availableStartTimes,
+  availabilityLabel,
   bookingQuoteLabel,
   filterProviders,
   summarizeBookings,
@@ -57,6 +58,15 @@ describe("pricing", () => {
   });
 });
 describe("availability", () => {
+  it("summarizes daily, weekday and custom schedules for discovery", () => {
+    expect(availabilityLabel(p)).toBe("Every day · 8 AM–6 PM local");
+    expect(availabilityLabel({ ...p, days: [1, 2, 3, 4, 5] })).toBe(
+      "Weekdays · 8 AM–6 PM local",
+    );
+    expect(
+      availabilityLabel({ ...p, days: [6, 2, 6], startHour: 12, endHour: 24 }),
+    ).toBe("Tue, Sat · 12 PM–12 AM local");
+  });
   it("blocks overlaps", () =>
     expect(() =>
       assertSlot(

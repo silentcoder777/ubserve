@@ -165,6 +165,9 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
   await expect(
     page.getByRole("heading", { name: "Taylor Demo" }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("article").filter({ hasText: "Taylor Demo" }),
+  ).toContainText("Weekdays · 8 AM–6 PM local");
   await page.getByLabel("Available day").selectOption({ label: "Sunday" });
   await expect(
     page.getByRole("heading", { name: "No providers found" }),
