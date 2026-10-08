@@ -47,10 +47,43 @@ test("customer books, tests decline/success, provider completes, customer review
   await expect(page.getByRole("dialog").getByRole("alert")).toContainText(
     "declined",
   );
-  await page.getByRole("button", { name: /Simulate payment/ }).click();
+  let successfulPaymentRequests = 0;
+  await page.route("**/api/mock-checkout", async (route) => {
+    const request = route.request().postDataJSON() as {
+      scenario?: string;
+      amountCents?: number;
+    };
+    if (request.scenario !== "success") return route.continue();
+    successfulPaymentRequests += 1;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: "mock_pi_single_request",
+        amountCents: request.amountCents,
+        currency: "usd",
+        status: "succeeded",
+        mock: true,
+      }),
+    });
+  });
+  const paymentButton = page.getByRole("button", {
+    name: /Simulate payment/,
+  });
+  await paymentButton.evaluate((button) => {
+    const submit = button as HTMLButtonElement;
+    submit.click();
+    submit.click();
+  });
+  await page.getByRole("button", { name: "Close dialog" }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Test checkout" }),
+  ).toBeVisible();
   await expect(
     page.getByText("Test payment complete", { exact: true }),
   ).toBeVisible();
+  expect(successfulPaymentRequests).toBe(1);
   const customerCard = page
     .getByRole("article")
     .filter({ has: page.getByRole("heading", { name: "Maya Thompson" }) });

@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import Modal from "./modal";
 import {
   Search,
@@ -122,6 +122,7 @@ function tomorrow() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 export default function Marketplace() {
+  const paymentInFlight = useRef(false);
   const state = useDemo(),
     account = state.accounts.find((a) => a.id === state.currentAccountId);
   const [view, setView] = useState<View>("discover"),
@@ -384,7 +385,8 @@ export default function Marketplace() {
     });
   }
   async function pay(scenario: "success" | "decline") {
-    if (!checkout) return;
+    if (!checkout || paymentInFlight.current) return;
+    paymentInFlight.current = true;
     setBusy(true);
     setError("");
     try {
@@ -405,6 +407,7 @@ export default function Marketplace() {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Checkout failed.");
     } finally {
+      paymentInFlight.current = false;
       setBusy(false);
     }
   }
@@ -1952,6 +1955,7 @@ export default function Marketplace() {
         <Modal
           title="Test checkout"
           onClose={() => {
+            if (paymentInFlight.current) return;
             setCheckout(null);
             setError("");
           }}
