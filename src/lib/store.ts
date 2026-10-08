@@ -148,20 +148,27 @@ export function saveProvider(
     a = currentAccount();
   if (!a || a.role !== "provider")
     throw new Error("Open a provider account first.");
-  quote(input, 1);
+  const normalized = {
+    ...input,
+    name: input.name.trim(),
+    title: input.title.trim(),
+    bio: input.bio.trim(),
+    city: input.city.trim(),
+    experience: input.experience.trim(),
+  };
+  quote(normalized, 1);
   if (
-    !input.name.trim() ||
-    !input.title.trim() ||
-    !input.bio.trim() ||
-    !input.city.trim() ||
-    !input.days.length ||
-    input.startHour >= input.endHour
+    !normalized.name ||
+    !normalized.title ||
+    !normalized.bio ||
+    !normalized.city ||
+    !normalized.days.length ||
+    normalized.startHour >= normalized.endHour
   )
     throw new Error("Complete your profile and choose valid availability.");
   const old = s.providers.find((p) => p.accountId === a.id);
   const provider: Provider = {
-    ...input,
-    name: input.name.trim(),
+    ...normalized,
     id: old?.id ?? crypto.randomUUID(),
     accountId: a.id,
     rating: old?.rating ?? 0,

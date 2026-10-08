@@ -184,16 +184,41 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
 }) => {
   await page.goto("/");
   await account(page, "Taylor Demo", "taylor@example.test", true);
-  await page.getByLabel("Display name").fill("Taylor Services");
+  await page.getByLabel("Display name").fill("  Taylor Services  ");
+  await page.getByLabel("City and state").fill("  Ames, IA  ");
+  await page.getByLabel("Experience").fill("  3 years of experience  ");
   await page
     .getByLabel("Profile headline")
-    .fill("Careful cleaning for your home");
+    .fill("  Careful cleaning for your home  ");
   await page
     .getByLabel("About your service")
-    .fill("A fixed-price cleaning visit with supplies included.");
+    .fill("  A fixed-price cleaning visit with supplies included.  ");
   await page.getByLabel("Pricing type").selectOption("fixed");
   await page.getByLabel("Price (USD)").fill("99");
   await page.getByRole("button", { name: "Publish profile" }).click();
+  const savedProfile = await page.evaluate(() => {
+    const snapshot = JSON.parse(
+      localStorage.getItem("ubserve-demo-v1") ?? "null",
+    ) as {
+      providers?: Array<{
+        name: string;
+        title: string;
+        bio: string;
+        city: string;
+        experience: string;
+      }>;
+    } | null;
+    return snapshot?.providers?.find(
+      (provider) => provider.name === "Taylor Services",
+    );
+  });
+  expect(savedProfile).toMatchObject({
+    name: "Taylor Services",
+    title: "Careful cleaning for your home",
+    bio: "A fixed-price cleaning visit with supplies included.",
+    city: "Ames, IA",
+    experience: "3 years of experience",
+  });
   await page.getByRole("button", { name: "Switch demo view" }).click();
   const switcher = page.getByRole("dialog", { name: "Switch demo view" });
   await expect(
