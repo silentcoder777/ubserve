@@ -161,6 +161,7 @@ export function saveProvider(
   const old = s.providers.find((p) => p.accountId === a.id);
   const provider: Provider = {
     ...input,
+    name: input.name.trim(),
     id: old?.id ?? crypto.randomUUID(),
     accountId: a.id,
     rating: old?.rating ?? 0,
@@ -169,6 +170,9 @@ export function saveProvider(
   };
   publish({
     ...s,
+    accounts: s.accounts.map((account) =>
+      account.id === a.id ? { ...account, name: provider.name } : account,
+    ),
     providers: old
       ? s.providers.map((p) => (p.id === old.id ? provider : p))
       : [...s.providers, provider],

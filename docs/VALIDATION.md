@@ -172,3 +172,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - The date starts at tomorrow, availability is recalculated against current bookings, and the estimate uses the provider's current listed price; payment and lifecycle state are never copied.
 - Browser coverage completes and reviews a service, opens the repeat flow, and verifies the prefilled details and fresh quote on desktop and mobile.
 - Production should offer an explicit saved-address policy and immutable historical price display while always creating a separate authorized booking record.
+
+## Provider display-identity consistency — October 8, 2026
+
+- Publishing a provider profile now saves the trimmed public display name to both the provider listing and its owning browser-local demo account in one marketplace snapshot.
+- The navigation and investor-preview account switcher therefore use the same current identity as discovery after a provider renames the profile.
+- Existing bookings deliberately retain their saved `providerName`; it is a historical booking snapshot and is not rewritten by a later profile edit.
+- Browser coverage creates a provider under one account name, publishes a different public name, verifies the account switcher and discovery agree, then reloads the production build to confirm persistence on desktop and mobile.
+- Production should avoid client-side denormalized identity updates: use a normalized user/profile relationship or a server-side transaction, while preserving explicit booking snapshots for history.

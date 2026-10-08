@@ -151,6 +151,7 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
 }) => {
   await page.goto("/");
   await account(page, "Taylor Demo", "taylor@example.test", true);
+  await page.getByLabel("Display name").fill("Taylor Services");
   await page
     .getByLabel("Profile headline")
     .fill("Careful cleaning for your home");
@@ -160,13 +161,19 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
   await page.getByLabel("Pricing type").selectOption("fixed");
   await page.getByLabel("Price (USD)").fill("99");
   await page.getByRole("button", { name: "Publish profile" }).click();
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  const switcher = page.getByRole("dialog", { name: "Switch demo view" });
+  await expect(
+    switcher.getByRole("button", { name: "Taylor Services provider" }),
+  ).toBeVisible();
+  await switcher.getByRole("button", { name: "Close dialog" }).click();
   await page.getByRole("button", { name: "Ubserve home" }).click();
   await page.getByLabel("Search services or providers").fill("Taylor");
   await expect(
-    page.getByRole("heading", { name: "Taylor Demo" }),
+    page.getByRole("heading", { name: "Taylor Services" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("article").filter({ hasText: "Taylor Demo" }),
+    page.getByRole("article").filter({ hasText: "Taylor Services" }),
   ).toContainText("Weekdays · 8 AM–6 PM local");
   await page.getByLabel("Available day").selectOption({ label: "Sunday" });
   await expect(
@@ -174,13 +181,13 @@ test("provider publishes fixed-price profile and discovery survives reload", asy
   ).toBeVisible();
   await page.getByLabel("Available day").selectOption({ label: "Monday" });
   await expect(
-    page.getByRole("heading", { name: "Taylor Demo" }),
+    page.getByRole("heading", { name: "Taylor Services" }),
   ).toBeVisible();
   await expect(page.getByText("$99", { exact: true })).toBeVisible();
   await page.reload();
   await page.getByLabel("Search services or providers").fill("Taylor");
   await expect(
-    page.getByRole("heading", { name: "Taylor Demo" }),
+    page.getByRole("heading", { name: "Taylor Services" }),
   ).toBeVisible();
 });
 test("search empty state and responsive page fit", async ({
