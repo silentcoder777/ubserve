@@ -180,3 +180,11 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Existing bookings deliberately retain their saved `providerName`; it is a historical booking snapshot and is not rewritten by a later profile edit.
 - Browser coverage creates a provider under one account name, publishes a different public name, verifies the account switcher and discovery agree, then reloads the production build to confirm persistence on desktop and mobile.
 - Production should avoid client-side denormalized identity updates: use a normalized user/profile relationship or a server-side transaction, while preserving explicit booking snapshots for history.
+
+## Guarded demo reset — October 8, 2026
+
+- **Reset demo data** now opens the same keyboard-accessible modal system used by the other consequential actions instead of relying on a browser confirmation prompt.
+- The dialog lists the current counts of demo accounts, provider profiles, bookings, reviews and saved providers before explaining that the original six fictional providers will be restored.
+- Cancelling preserves the current account and marketplace records. Confirming resets the marketplace, active identity, discovery filters and booking filter, then displays a visible success status.
+- Browser coverage verifies cancellation and confirmation at desktop and mobile viewport sizes, including the restored six-card discovery state.
+- This reset affects only browser-local mock state; it is not a production deletion or recovery workflow. A real system requires authenticated, scoped deletion, audit records and an appropriate retention policy.

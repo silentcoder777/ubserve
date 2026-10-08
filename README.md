@@ -25,6 +25,7 @@ A responsive US local-services marketplace where customers choose providers by s
 - Switch between existing customer and provider workspaces with an explicitly labeled browser-only investor preview control.
 - Keep marketplace data synchronized across same-profile browser tabs while each tab retains its own customer or provider workspace.
 - Validate saved browser data at runtime and recover to the fictional seed when a snapshot is malformed.
+- Review exactly what browser-local records will be cleared before confirming a full demo reset.
 
 ## Technology
 
@@ -65,7 +66,7 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 7. Choose **Book again** to show the repeat-service flow with fresh availability and the prior visit details.
 8. To show onboarding, create another provider account and publish a new profile.
 
-**Reset demo data** clears all locally saved accounts, profiles, bookings, reviews, and provider shortlists. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
+**Reset demo data** opens a confirmation summary before clearing all locally saved accounts, profiles, bookings, reviews, and provider shortlists and restoring the six fictional providers. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
 
 ## Structure
 

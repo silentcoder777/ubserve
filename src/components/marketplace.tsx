@@ -153,6 +153,7 @@ export default function Marketplace() {
     [busy, setBusy] = useState(false),
     [mobileMenu, setMobileMenu] = useState(false),
     [demoSwitcher, setDemoSwitcher] = useState(false),
+    [resetConfirmation, setResetConfirmation] = useState(false),
     [bookingFilter, setBookingFilter] = useState<BookingFilter>("all");
   const [hours, setHours] = useState(2);
   const [bookingDate, setBookingDate] = useState(tomorrow());
@@ -1366,21 +1367,67 @@ export default function Marketplace() {
         <span>Local help. On your terms.</span>
         <button
           onClick={() => {
-            if (
-              window.confirm(
-                "Clear all browser-local demo accounts, bookings, and reviews?",
-              )
-            )
-              attempt(() => {
-                resetDemo();
-                setView("discover");
-                setNotice("Demo reset.");
-              });
+            setResetConfirmation(true);
+            setError("");
           }}
         >
           Reset demo data
         </button>
       </footer>
+      {resetConfirmation && (
+        <Modal
+          title="Reset all demo data?"
+          onClose={() => {
+            setResetConfirmation(false);
+            setError("");
+          }}
+        >
+          <p className="muted">
+            This replaces the browser-local marketplace with the original
+            fictional seed. This action cannot be undone.
+          </p>
+          <div className="confirmation-summary" aria-label="Data to reset">
+            <span>{state.accounts.length} demo accounts</span>
+            <span>{state.providers.length} provider profiles</span>
+            <span>{state.bookings.length} bookings</span>
+            <span>{state.reviews.length} reviews</span>
+            <span>{state.savedProviders.length} saved providers</span>
+          </div>
+          <p className="fine-print">
+            No production account, payment, or external data exists in this
+            demo. The six fictional provider profiles will be restored.
+          </p>
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="confirmation-actions">
+            <button
+              className="secondary"
+              onClick={() => setResetConfirmation(false)}
+            >
+              Keep demo data
+            </button>
+            <button
+              className="primary"
+              onClick={() =>
+                attempt(() => {
+                  resetDemo();
+                  setResetConfirmation(false);
+                  setView("discover");
+                  clearDiscoveryFilters();
+                  setBookingFilter("all");
+                  setMobileMenu(false);
+                  setNotice("Demo reset to the fictional seed.");
+                })
+              }
+            >
+              Reset everything
+            </button>
+          </div>
+        </Modal>
+      )}
       {auth && (
         <Modal
           title="Make yourself at home"

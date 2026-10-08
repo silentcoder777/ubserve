@@ -214,6 +214,36 @@ test("search empty state and responsive page fit", async ({
   ).toBe(true);
 });
 
+test("demo reset explains its scope and requires confirmation", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await account(page, "Reset Demo", "reset@example.test");
+  await page.getByRole("button", { name: "Reset demo data" }).click();
+  let dialog = page.getByRole("dialog", { name: "Reset all demo data?" });
+  await expect(dialog.getByText("7 demo accounts")).toBeVisible();
+  await expect(dialog.getByText("6 provider profiles")).toBeVisible();
+  await dialog.getByRole("button", { name: "Keep demo data" }).click();
+  await page.getByRole("button", { name: "Switch demo view" }).click();
+  await expect(
+    page
+      .getByRole("dialog", { name: "Switch demo view" })
+      .getByRole("button", { name: "Reset Demo customer" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Close dialog" }).click();
+
+  await page.getByRole("button", { name: "Reset demo data" }).click();
+  dialog = page.getByRole("dialog", { name: "Reset all demo data?" });
+  await dialog.getByRole("button", { name: "Reset everything" }).click();
+  await expect(
+    page.getByText("Demo reset to the fictional seed."),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Join / sign in", exact: true }).first(),
+  ).toBeVisible();
+  await expect(page.getByRole("article")).toHaveCount(6);
+});
+
 test("discovery combines pricing model and maximum price filters", async ({
   page,
 }) => {
