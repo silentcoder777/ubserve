@@ -72,9 +72,10 @@ test("customer books, tests decline/success, provider completes, customer review
       }),
     });
   });
-  const paymentButton = page.getByRole("button", {
-    name: /Simulate payment/,
-  });
+  const paymentButton = page
+    .getByRole("dialog", { name: "Test checkout" })
+    .locator("button.primary.full")
+    .first();
   await paymentButton.evaluate((button) => {
     const submit = button as HTMLButtonElement;
     submit.click();
