@@ -29,6 +29,10 @@ export type Provider = {
   startHour: number;
   endHour: number;
 };
+export type ProviderDraft = Omit<
+  Provider,
+  "id" | "accountId" | "rating" | "reviewCount" | "color"
+>;
 export type Booking = {
   id: string;
   customerId: string;
@@ -131,6 +135,42 @@ export function quote(
   return provider.pricing === "hourly"
     ? Math.round(provider.priceCents * hours)
     : provider.priceCents;
+}
+export function normalizeProviderDraft(input: ProviderDraft): ProviderDraft {
+  const normalized = {
+    ...input,
+    name: input.name.trim(),
+    title: input.title.trim(),
+    bio: input.bio.trim(),
+    city: input.city.trim(),
+    experience: input.experience.trim(),
+    days: [...new Set(input.days)].sort((a, b) => a - b),
+  };
+  const validSchedule =
+    normalized.days.length > 0 &&
+    normalized.days.every(
+      (day) => Number.isInteger(day) && day >= 0 && day <= 6,
+    ) &&
+    Number.isInteger(normalized.startHour) &&
+    normalized.startHour >= 0 &&
+    normalized.startHour <= 23 &&
+    Number.isInteger(normalized.endHour) &&
+    normalized.endHour >= 1 &&
+    normalized.endHour <= 24 &&
+    normalized.startHour < normalized.endHour;
+  if (
+    !normalized.name ||
+    !normalized.title ||
+    !normalized.bio ||
+    !normalized.city ||
+    !normalized.experience ||
+    !["Cleaning", "Cooking", "Auto repair"].includes(normalized.category) ||
+    !["hourly", "fixed"].includes(normalized.pricing) ||
+    !validSchedule
+  )
+    throw new Error("Complete your profile and choose valid availability.");
+  quote(normalized, 1);
+  return normalized;
 }
 export function assertSlot(
   provider: Provider,

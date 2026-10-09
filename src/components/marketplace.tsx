@@ -949,6 +949,7 @@ export default function Marketplace() {
                   <Field label="Experience">
                     <input
                       name="experience"
+                      required
                       defaultValue={profile?.experience ?? ""}
                       placeholder="e.g. 3 years of experience"
                     />

@@ -181,6 +181,14 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Browser coverage creates a provider under one account name, publishes a different public name, verifies the account switcher and discovery agree, then reloads the production build to confirm persistence on desktop and mobile.
 - Production should avoid client-side denormalized identity updates: use a normalized user/profile relationship or a server-side transaction, while preserving explicit booking snapshots for history.
 
+## Provider publication integrity — October 8, 2026
+
+- Provider publication now passes through one pure normalization and validation boundary before browser-local persistence.
+- Public text is trimmed, duplicate weekdays are removed and weekday values are sorted. Experience is required alongside name, headline, description and city.
+- The boundary rejects out-of-range weekdays, non-integer or out-of-range working hours, empty schedules, invalid pricing/category values and schedules that do not end after they start.
+- Unit coverage verifies canonical output and each invalid schedule/profile class. The provider publication browser journey continues to verify exact normalized persistence, fixed pricing, discovery and reload behavior at desktop and mobile viewport sizes.
+- This protects mock-state quality, not production security. A real API must repeat validation on trusted server input and enforce database constraints.
+
 ## Guarded demo reset — October 8, 2026
 
 - **Reset demo data** now opens the same keyboard-accessible modal system used by the other consequential actions instead of relying on a browser confirmation prompt.

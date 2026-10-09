@@ -6,6 +6,7 @@ import {
   availabilityLabel,
   bookingQuoteLabel,
   filterProviders,
+  normalizeProviderDraft,
   summarizeBookings,
   sortBookingsForDashboard,
   ranked,
@@ -55,6 +56,43 @@ describe("pricing", () => {
       }),
     ).toBe("$85 fixed price");
     expect(bookingQuoteLabel({ hours: 2 })).toBe("Saved booking total");
+  });
+});
+describe("provider profile publication", () => {
+  it("normalizes public text and canonicalizes available weekdays", () => {
+    expect(
+      normalizeProviderDraft({
+        ...p,
+        name: "  Maya Thompson  ",
+        title: "  Home cleaning  ",
+        bio: "  Careful service.  ",
+        city: "  Ames, IA  ",
+        experience: "  6 years  ",
+        days: [5, 1, 5, 3],
+      }),
+    ).toMatchObject({
+      name: "Maya Thompson",
+      title: "Home cleaning",
+      bio: "Careful service.",
+      city: "Ames, IA",
+      experience: "6 years",
+      days: [1, 3, 5],
+    });
+  });
+
+  it.each([
+    { experience: " " },
+    { category: "Other" as never },
+    { pricing: "other" as never },
+    { days: [] },
+    { days: [7] },
+    { startHour: -1 },
+    { startHour: 18, endHour: 18 },
+    { endHour: 25 },
+  ])("rejects an incomplete or invalid profile: %o", (override) => {
+    expect(() => normalizeProviderDraft({ ...p, ...override })).toThrow(
+      "Complete your profile",
+    );
   });
 });
 describe("availability", () => {

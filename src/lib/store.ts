@@ -4,10 +4,12 @@ import { seed } from "./seed";
 import { parseStoredState } from "./persistence";
 import {
   assertSlot,
+  normalizeProviderDraft,
   quote,
   type Account,
   type Booking,
   type Provider,
+  type ProviderDraft,
   type State,
 } from "./model";
 const KEY = "ubserve-demo-v1";
@@ -139,33 +141,13 @@ export function toggleSavedProvider(providerId: string) {
   return !exists;
 }
 export function saveProvider(
-  input: Omit<
-    Provider,
-    "id" | "accountId" | "rating" | "reviewCount" | "color"
-  >,
+  input: ProviderDraft,
 ) {
   const s = getSnapshot(),
     a = currentAccount();
   if (!a || a.role !== "provider")
     throw new Error("Open a provider account first.");
-  const normalized = {
-    ...input,
-    name: input.name.trim(),
-    title: input.title.trim(),
-    bio: input.bio.trim(),
-    city: input.city.trim(),
-    experience: input.experience.trim(),
-  };
-  quote(normalized, 1);
-  if (
-    !normalized.name ||
-    !normalized.title ||
-    !normalized.bio ||
-    !normalized.city ||
-    !normalized.days.length ||
-    normalized.startHour >= normalized.endHour
-  )
-    throw new Error("Complete your profile and choose valid availability.");
+  const normalized = normalizeProviderDraft(input);
   const old = s.providers.find((p) => p.accountId === a.id);
   const provider: Provider = {
     ...normalized,
