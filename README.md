@@ -66,6 +66,8 @@ Browser tests cover desktop and mobile Chromium using the production build on po
 7. Choose **Book again** to show the repeat-service flow with fresh availability and the prior visit details.
 8. To show onboarding, create another provider account and publish a new profile.
 
+For the timed presentation sequence, preflight steps, talking points, and recovery options, use the [investor demo runbook](docs/DEMO_RUNBOOK.md).
+
 **Reset demo data** opens a confirmation summary before clearing all locally saved accounts, profiles, bookings, reviews, and provider shortlists and restoring the six fictional providers. Tabs in the same browser profile receive live marketplace updates, while the active demo account is tab-specific. Different browsers, profiles, and devices do not share data.
 
 ## Structure
@@ -78,9 +80,10 @@ src/lib/model.ts             Types, pricing, quote display, availability, rankin
 src/lib/persistence.ts       Runtime schema and relationship validation
 src/lib/seed.ts               Clearly labeled fictional providers
 src/lib/store.ts              Browser-local state and demo commands
- tests/                      Domain and browser tests
+tests/                        Domain and browser tests
 .github/workflows/ci.yml      Automated checks
- docs/ROADMAP.md              Delivery status and production backlog
+docs/DEMO_RUNBOOK.md          Presentation preflight, walkthrough, and recovery
+docs/ROADMAP.md               Delivery status and production backlog
 ```
 
 ## API

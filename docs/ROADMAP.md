@@ -23,12 +23,13 @@ Target: Friday morning, October 9, 2026, America/Chicago. Exact presentation tim
 - Runtime validation and safe fallback for malformed browser-local snapshots.
 - Guarded full-demo reset with a browser-local record summary and explicit confirmation.
 
-## Before the investor presentation
+## Presentation readiness
 
-1. Connect Supabase and replace browser-local identity/storage with real authentication and shared database persistence.
-2. Enforce authorization, booking concurrency and price snapshots on the server; add provider timezone handling.
-3. Configure Vercel, environment variables, preview deployments and production deployment after passing CI.
-4. Rehearse the customer/provider journey on actual phones and desktop.
+- Production build and automated desktop/mobile Chromium journeys pass in GitHub Actions.
+- The local production server and mock-checkout success, decline, malformed-request, and disabled-payment responses have been smoke-tested.
+- The customer → booking → mock payment → provider completion → review journey has a timed [demo runbook](DEMO_RUNBOOK.md) with recovery steps and accurate limitation language.
+- Vercel, Supabase, real authentication, shared persistence, and real Stripe remain explicitly deferred until those services are connected and verified.
+- An actual-phone rehearsal remains a presenter task because no device or deployed URL is connected to this workspace.
 
 ## Production backlog
 

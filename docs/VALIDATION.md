@@ -189,6 +189,14 @@ The native dialog implementation applies to signup, booking, checkout and review
 - Unit coverage verifies canonical output and each invalid schedule/profile class. The provider publication browser journey continues to verify exact normalized persistence, fixed pricing, discovery and reload behavior at desktop and mobile viewport sizes.
 - This protects mock-state quality, not production security. A real API must repeat validation on trusted server input and enforce database constraints.
 
+## Final production smoke rehearsal — October 9, 2026
+
+- ESLint, TypeScript, 53 Vitest checks and a fresh production build passed from the final source state; Playwright still enumerates 32 desktop/mobile checks.
+- The production server returned HTTP 200 for the marketplace and rendered the Ubserve application shell.
+- Direct mock-checkout smoke calls returned HTTP 200 with `mock: true` for success, HTTP 402 for the intentional decline, HTTP 400 for invalid input and HTTP 403 when `DISABLE_MOCK_PAYMENTS=true`.
+- The latest hosted GitHub Actions run independently passed dependency installation, lint, typecheck, all 53 Vitest checks, the production build, browser installation and all 32 Playwright checks.
+- The [demo runbook](DEMO_RUNBOOK.md) records the timed customer/provider story, preflight, recovery options and claims that must remain out of scope. Actual-phone testing and deployment remain unverified because no device, Vercel project or public URL is connected.
+
 ## Guarded demo reset — October 8, 2026
 
 - **Reset demo data** now opens the same keyboard-accessible modal system used by the other consequential actions instead of relying on a browser confirmation prompt.
